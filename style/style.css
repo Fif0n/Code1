@@ -1,0 +1,16 @@
+:root {
+    --bacground: #f1fffa;
+    --nav: #ccfccb;
+    --light-button: #96e6b3;
+    --user-circle: #568259;
+    --dark-button: #464e47;
+
+}
+* {
+    font-family: 'Lato', sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bacground);
+}
