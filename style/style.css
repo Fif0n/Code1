@@ -38,7 +38,7 @@ header {
     height: 60px;
     background-color: var(--nav);
     font-size: 28px;
-    position: fixed;
+    /* position: fixed; */
 }
 header img {
     margin: 0 30px;
@@ -272,4 +272,40 @@ nav {
 }
 .login-content p:last-child {
     color: var(--light-button);
+}
+/* footer */
+
+footer {
+    max-width: 1400px;
+    border-top: 1px solid grey;
+    margin: 0 auto;
+    display: flex;
+    
+}
+.footer-container {
+    display: flex;
+    padding: 30px 0;
+    width: 100%;
+    flex-direction: column;
+}
+.footer-links {
+    display: flex;
+    width: 100%;
+}
+.footer-container ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+.footer-container ul li {
+    margin: 10px 0;
+    transition: all ease 0.3s;
+}
+.footer-container ul li:hover {
+    color: grey;
+}
+.copyright {
+    width: 100%;
+    color: grey;
+    text-align: right;
 }
