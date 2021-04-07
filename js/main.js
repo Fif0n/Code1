@@ -4,8 +4,14 @@ const loginBtn = document.querySelector('.log-in');
 
 const closeBtn = document.querySelector('.close');
 
+const loginBtn2 = document.querySelector('.log-in2');
+
 loginBtn.addEventListener('click', e => {
     e.preventDefault();
+    loginPopup.style.display = "block";
+})
+
+loginBtn2.addEventListener('click', () => {
     loginPopup.style.display = "block";
 })
 

@@ -96,6 +96,7 @@ nav {
     -webkit-box-shadow: 11px 11px 11px -9px rgba(0,0,0,0.8); 
     box-shadow: 11px 11px 11px -9px rgba(0,0,0,0.8);
     padding: 10px 0;
+    font-size: 26px;
 }
 .button-text:hover .sub-menu ul {
     display: block;
@@ -252,6 +253,7 @@ nav {
     padding: 0;
     background-color: var(--light-button);
     cursor: pointer;
+    font-size: 24px;
 }
 .login-content button:hover {
     opacity: 0.7;
@@ -273,11 +275,56 @@ nav {
 .login-content p:last-child {
     color: var(--light-button);
 }
+/* sections */
+section {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+/* Register form */
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 0 40px 0;
+}
+
+.register-form h1{
+    font-size: 46px;
+}
+.register-form form {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin: 0 auto;
+}
+.register-form input, .register-form button {
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+    margin: 15px 0;
+}
+.register-form button {
+    background-color: var(--light-button);
+    font-size: 24px;
+}
+.register-form p{
+    font-size: 20px;
+    margin: 10px 0;
+}
+.register-form p:last-child {
+    color: var(--light-button);
+    cursor: pointer;
+}
 /* footer */
 
 footer {
     max-width: 1400px;
-    border-top: 1px solid grey;
+    border-top: 1px solid rgb(148, 148, 148);
     margin: 0 auto;
     display: flex;
     
