@@ -293,7 +293,7 @@ section {
     margin: 60px 0;
 }
 .home-page img {
-    width: 800px;
+    width: 1000px;
     margin: 30px auto;
 }
 .home-page h1 {
@@ -305,9 +305,14 @@ section {
 }
 .home-courses-grid a{
     flex: 1;
-    margin: 0 10px;
 }
-.course-card h4 {
+.home-courses-grid img {
+    transition: 0.2s filter;
+}
+.course-card img:hover {
+    filter: brightness(80%);
+  }
+.course-card h3 {
     margin:  0;
 }
 .course-card img {
