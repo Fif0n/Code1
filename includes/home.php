@@ -8,56 +8,72 @@
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
-                    </div>
-                </a>
-                <a href="">
-                    <div class="course-card">
-                            <img src="photos/course-miniature.jpg" alt="">
-                        <h3>Tytuł</h3>
-                        <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
+                    </div>
+                </a>
+                <a href="">
+                    <div class="course-card">
+                        <img src="photos/course-miniature.jpg" alt="">
+                        <h3>Tytuł</h3>
+                        <h5>Autor</h5>
+                        <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
             </div>
@@ -67,56 +83,72 @@
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
                 <a href="">
                     <div class="course-card">
                         <img src="photos/course-miniature.jpg" alt="">
                         <h3>Tytuł</h3>
+                        <h5>Autor</h5>
                         <p>ocena</p>
+                        <p>Cena</p>
                     </div>
                 </a>
             </div>
