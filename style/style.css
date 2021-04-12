@@ -359,6 +359,104 @@ section {
     color: var(--light-button);
     cursor: pointer;
 }
+
+/* user panel */
+
+.user-panel-container {
+    display: flex;
+    flex-direction: row;
+    margin: 40px 20px;
+}
+.user-nav-panel {
+    border-right: 1px solid black;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+}
+.user-panel-icon {
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+.user-panel-icon p {
+    font-size: 36px;
+    margin: 15px 0;
+}
+.user-avatar {
+    height: 200px;
+    width: 200px;
+    background-color: var(--user-circle);
+    border-radius: 50%;
+    color: white;
+}
+.user-avatar span {
+    display: block;
+    text-align: center;
+    font-size: 100px;
+    padding: 25% 0 ;
+}
+.user-panel-options ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+}
+.user-panel-options ul li div {
+    font-size: 20px;
+    padding:  10px 0;
+}
+.user-panel-options ul li div p {
+    margin: 0 0 0 10px;
+}
+.user-panel-options .active {
+    background-color: var(--user-circle);
+    color: white;
+}
+.panel-option:hover {
+    background-color: var(--user-circle);
+    color: white;
+}
+.user-main-panel {
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+.user-main-panel h1 {
+    font-size: 36px;
+}
+.user-main-panel p {
+    font-size: 18px;
+}
+.user-main-panel form {
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+}
+.user-main-panel input, .user-main-panel button {
+    border-radius: 10px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+    margin: 10px auto;
+}
+.user-main-panel input {
+    width: 50%;
+}
+.user-main-panel button {
+    padding: 0;
+    background-color: #EC5252;
+    color: white;
+    width: 20%;
+}
+.del-account em{
+    color: #cc2337;
+}
 /* footer */
 
 footer {

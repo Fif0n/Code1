@@ -33,13 +33,13 @@
                             </div>
                         </li>
                     </a>
-                    <!-- <a href="">
+                    <a href="">
                         <li class="button-text">
                             <span>Twoje kursy</span> 
                         </li>
-                    </a> -->
+                    </a>
                 </ul>
-                <!-- <div class="user-icon">
+                <div class="user-icon">
                     <span>U</span>
                     <div class="user-sub-menu">
                         <ul>
@@ -52,8 +52,8 @@
                             <li><a href="">Wyloguj się</a></li>
                         </ul>
                     </div>
-                </div> -->
-                <div class="sign-buttons">
+                </div>
+                <!-- <div class="sign-buttons">
                     <button class="log-in">
                         <a href="">
                             <span>Zaloguj się</span>
@@ -64,7 +64,7 @@
                             <span>Zarejestruj się</span>
                         </a>
                     </button>
-                </div>
+                </div> -->
             </nav>     
         </header>
         <div class="login-popup">
