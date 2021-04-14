@@ -7,6 +7,7 @@
     <title>Code1</title>
     <link rel="stylesheet" href="./style/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
 </head>
 <body>
     <div class="container">

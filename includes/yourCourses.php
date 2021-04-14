@@ -99,7 +99,7 @@
             </div>
             <div class="add-course">
                 <button>Opublikuj nowy kurs</button>
-            </div> -->
-        </div>
+            </div>
+        </div> -->
     </div>   
 </section>
