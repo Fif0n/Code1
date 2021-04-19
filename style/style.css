@@ -86,6 +86,9 @@ nav {
     display: none;
     z-index: 1;
 }
+.button-text {
+    cursor: pointer;
+}
 .button-text:hover .sub-menu {
     display: block;
     position: absolute;
