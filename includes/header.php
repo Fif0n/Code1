@@ -32,53 +32,61 @@
                             </ul>
                         </div>
                     </li>
-                    <a href="/Code1/yourCourses">
-                        <li class="button-text">
-                            <span>Twoje kursy</span> 
-                        </li>
-                    </a>
-                </ul>
-                <div class="user-icon">
-                    <span>U</span>
-                    <div class="user-sub-menu">
-                        <ul>
-                            <div class="username">
-                                <li>Zalogowany jako: User</li>
-                            </div>
-                            <li><a href="/Code1/userPanel/">Zarządzaj kontem</a></li>
-                            <li><a href="/Code1/yourCourses/">Twoje kursy</a></li>
-                            <li><a href="">Historia zakupów</a></li>
-                            <li><a href="">Wyloguj się</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- <div class="sign-buttons">
-                    <button class="log-in">
-                        <a href="">
-                            <span>Zaloguj się</span>
+                    <?php 
+                        if(isset($_SESSION['username'])){
+                            echo "
+                        <a href='/Code1/yourCourses'>
+                            <li class='button-text'>
+                                <span>Twoje kursy</span> 
+                            </li>
                         </a>
-                    </button>
-                    <button class="sign-in">
-                        <a href="/Code1/registerForm">
-                            <span>Zarejestruj się</span>
-                        </a>
-                    </button>
-                </div> -->
+                    </ul>
+                    <div class='user-icon'>
+                        <span>".$_SESSION['username'][0]."</span>
+                        <div class='user-sub-menu'>
+                            <ul>
+                                <div class='username'>
+                                    <li>Zalogowany jako: ".$_SESSION['username']."</li>
+                                </div>
+                                <li><a href='/Code1/userPanel/'>Zarządzaj kontem</a></li>
+                                <li><a href='/Code1/yourCourses/'>Twoje kursy</a></li>
+                                <li><a href=''>Historia zakupów</a></li>
+                                <li><form action='/Code1/functions/logout.php' method='POST'><button type='submit'>Wyloguj się</button></form></li>
+                            </ul>
+                        </div>
+                    </div>";
+                        } else if(!isset($_SESSION['username'])){
+                            echo "
+                            <div class='sign-buttons'>
+                                <button class='log-in'>
+                                    <a href=''>
+                                        <span>Zaloguj się</span>
+                                    </a>
+                                </button>
+                                <button class='sign-in'>
+                                    <a href='/Code1/registerForm'>
+                                        <span>Zarejestruj się</span>
+                                    </a>
+                                </button>
+                            </div>";
+                        }
+                ?>
             </nav>     
         </header>
         <div class="login-popup">
             <div class="login-content">
                 <span class="close">&times;</span>
                 <h1>Logowanie</h1>
-                <form action="" method="POST">
-                    <input type="text" name="username" placeholder="Nazwa użytkownika">
-                    <input type="password" name="password" placeholder="Hasło">
-                    <button type="submit" name="login-submit">Zaloguj się</button>
+                <form>
+                    <input type="text" id="l_username" placeholder="Nazwa użytkownika">
+                    <input type="password" id="l_password" placeholder="Hasło">
+                    <button type="submit" id="submit-login">Zaloguj się</button>
+                    <ul id="login-error-message">
+
+                    </ul>
                 </form>
                 <p>Nie posiadasz konta?</p>
                 <a href="/Code1/registerForm"><p>Zarejestruj się</p></a>
             </div>
         </div>
-        
-        
     
