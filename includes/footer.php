@@ -22,7 +22,7 @@
         </footer>
 
     </div>
-    <script src="js/main.js"></script>
+    <script src="/Code1/js/main.js"></script>
     <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
 </body>
 </html>

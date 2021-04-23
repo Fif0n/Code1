@@ -1,6 +1,9 @@
 <?php
+    session_start();
     include 'includes/header.php';
-
+    include 'functions/conn.php';
+    
+    
     if(isset($_GET['view'])){
         $view = $_GET['view'];
     } else {
