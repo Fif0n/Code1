@@ -6,10 +6,13 @@ const closeBtn = document.querySelector('.close');
 
 const loginBtn2 = document.querySelector('.log-in2');
 
-loginBtn.addEventListener('click', e => {
-    e.preventDefault();
-    loginPopup.style.display = "block";
-});
+if(loginBtn != undefined){
+    loginBtn.addEventListener('click', e => {
+        e.preventDefault();
+        loginPopup.style.display = "block";
+    });
+}
+
 
 if(loginBtn2 != undefined){
     loginBtn2.addEventListener('click', () => {
@@ -131,7 +134,6 @@ if(loginForm.username != undefined){
             }
 
             if(responseObject){
-                // console.log(responseObject)
                 loginResponse(responseObject);
             }
 
@@ -160,5 +162,66 @@ function loginResponse(responseObject){
             });
     
             loginForm.error.style.display = "block";
+    }
+}
+
+// edit soft data
+
+const editSoftForm = {
+    username: document.getElementById('edit-soft-username'),
+    email: document.getElementById('edit-soft-email'),
+    password: document.getElementById('edit-soft-password'),
+    submit: document.getElementById('edit-soft-submit'),
+    error: document.getElementById('edit-soft-error-message')
+}
+
+if(editSoftForm.username != undefined){
+    editSoftForm.submit.addEventListener('click', e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+
+        const requestData = {
+            username: editSoftForm.username.value,
+            email: editSoftForm.email.value,
+            password: editSoftForm.password.value,
+        }
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = JSON.stringify(request.responseText);
+            } catch(e) {
+                console.error('Could not parse JSON');
+            }
+
+            if(responseObject){
+                editSoftResponse(responseObject)
+            }
+        }
+
+        const fields = JSON.stringify(requestData)
+
+        request.open('post', '/Code1/functions/editSoft.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(fields);
+    })
+}
+
+function editSoftResponse(responseObject){
+    const response = JSON.parse(JSON.parse(responseObject));
+    if(response.ok){
+        location.reload();
+    } else {
+            while (editSoftForm.error.firstChild) {
+                editSoftForm.error.removeChild(editSoftForm.error.firstChild);
+            }
+    
+            response.error.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                editSoftForm.error.appendChild(li);
+            });
+    
+            editSoftForm.error.style.display = "block";
     }
 }

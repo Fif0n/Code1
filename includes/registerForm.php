@@ -7,7 +7,7 @@
             <input type="text" id="r_email" placeholder="E-mail">
             <input type="password" id="r_password" placeholder="Hasło">
             <input type="password" id="r_passwordRepeat" placeholder="Powtórz hasło">
-            <button type="submit" id="register_submit" name="register">Zarejestruj się</button>
+            <button type="submit" id="register_submit">Zarejestruj się</button>
             <ul id="error-message">
 
             </ul>

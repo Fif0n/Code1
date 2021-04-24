@@ -2,8 +2,8 @@
     <div class="user-panel-container">
         <div class="user-nav-panel">
             <div class="user-panel-icon">
-                <div class="user-avatar"><span>U</span></div>
-                <p>User</p>
+                <div class="user-avatar"><span><?= $_SESSION['username'][0]?></span></div>
+                <p><?= $_SESSION['username']?></p>
             </div>
             <div class="user-panel-options">
                 <ul>
@@ -14,6 +14,7 @@
         </div>
         <div class="user-main-panel">
         <?php 
+        
             if(isset($_GET['subPage'])){
                 $subPage = $_GET['subPage'];
             } else {
@@ -24,10 +25,13 @@
                 echo "<h1>Twoje dane</h1>
                 <form>
                     <p>Zmień dane: </p>
-                    <input type='text' value='User'>
-                    <input type='text' value='e-mail'>
-                    <input type='password' placeholder='Podaj aktualne hasło'>
-                    <button>Zmień dane</button>
+                    <input type='text' id='edit-soft-username' value='".$_SESSION['username']."' placeholder='Nazwa użytkownika'>
+                    <input type='text' id='edit-soft-email' value='".$_SESSION['email']."' placeholder='E-mail'>
+                    <input type='password' id='edit-soft-password' placeholder='Podaj aktualne hasło'>
+                    <button type='submit' id='edit-soft-submit'>Zmień dane</button>
+                    <ul id='edit-soft-error-message'>
+
+                    </ul>
                 </form>
                 <form>
                     <p>Zmieś hasło: </p>
