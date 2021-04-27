@@ -1,5 +1,9 @@
+<?php
+    if(isset($_SESSION['username'])){
+        header("Location: /Code1/home");
+    }
+?>
 <section>
-
     <div class="register-form">
     <h1>Rejestracja</h1>
         <form>

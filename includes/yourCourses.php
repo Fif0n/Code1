@@ -1,3 +1,8 @@
+<?php
+    if(!isset($_SESSION['username'])){
+        header("Location: /Code1/home");
+    }
+?>
 <section>
     <div class="your-courses-container">
         <div class="your-courses-header">

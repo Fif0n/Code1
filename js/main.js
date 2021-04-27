@@ -31,6 +31,56 @@ loginPopup.addEventListener('click', e => {
     }
 })
 
+
+function singleResponse(responseObject, form){
+    const response = JSON.parse(JSON.parse(responseObject));
+    if(response.ok){
+        location.reload();
+    } else {
+            while (form.error.firstChild) {
+                form.error.removeChild(form.error.firstChild);
+            }
+    
+            response.error.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                form.error.appendChild(li);
+            });
+    
+            form.error.style.display = "block";
+    }
+}
+function doubleResponse(responseObject, form){
+    const response = JSON.parse(JSON.parse(responseObject));
+        if (response.ok) {
+            form.error.style.display = "none";
+            while (form.success.firstChild) {
+                form.success.removeChild(form.success.firstChild);
+            }
+    
+            response.error.forEach(success => {
+                const li = document.createElement('li');
+                li.textContent = success;
+                form.success.appendChild(li);
+            });
+    
+            form.success.style.display = "block";
+        } else {
+            form.success.style.display = "none";
+            while (form.error.firstChild) {
+                form.error.removeChild(form.error.firstChild);
+            }
+    
+            response.error.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                form.error.appendChild(li);
+            });
+    
+            form.error.style.display = "block";
+        }
+}
+
 const registerForm = {
     username: document.getElementById('r_username'),
     email: document.getElementById('r_email'),
@@ -63,7 +113,7 @@ if(registerForm.username != undefined){
             }
     
             if(responseObject){
-                handleResponse(responseObject);
+                doubleResponse(responseObject, registerForm);
                 
             }
         }
@@ -74,36 +124,6 @@ if(registerForm.username != undefined){
         request.send(fields);
     });
     
-    function handleResponse (responseObject) {
-        const response = JSON.parse(JSON.parse(responseObject));
-        if (response.ok) {
-            registerForm.error.style.display = "none";
-            while (registerForm.success.firstChild) {
-                registerForm.success.removeChild(registerForm.success.firstChild);
-            }
-    
-            response.error.forEach(success => {
-                const li = document.createElement('li');
-                li.textContent = success;
-                registerForm.success.appendChild(li);
-            });
-    
-            registerForm.success.style.display = "block";
-        } else {
-            registerForm.success.style.display = "none";
-            while (registerForm.error.firstChild) {
-                registerForm.error.removeChild(registerForm.error.firstChild);
-            }
-    
-            response.error.forEach(error => {
-                const li = document.createElement('li');
-                li.textContent = error;
-                registerForm.error.appendChild(li);
-            });
-    
-            registerForm.error.style.display = "block";
-        }
-    }
 }
 
 const loginForm = {
@@ -134,7 +154,7 @@ if(loginForm.username != undefined){
             }
 
             if(responseObject){
-                loginResponse(responseObject);
+                singleResponse(responseObject, loginForm);
             }
 
         }
@@ -144,25 +164,6 @@ if(loginForm.username != undefined){
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             request.send(fields);
     })
-}
-
-function loginResponse(responseObject){
-    const response = JSON.parse(JSON.parse(responseObject));
-    if(response.ok){
-        location.reload();
-    } else {
-            while (loginForm.error.firstChild) {
-                loginForm.error.removeChild(loginForm.error.firstChild);
-            }
-    
-            response.error.forEach(error => {
-                const li = document.createElement('li');
-                li.textContent = error;
-                loginForm.error.appendChild(li);
-            });
-    
-            loginForm.error.style.display = "block";
-    }
 }
 
 // edit soft data
@@ -183,7 +184,7 @@ if(editSoftForm.username != undefined){
         const requestData = {
             username: editSoftForm.username.value,
             email: editSoftForm.email.value,
-            password: editSoftForm.password.value,
+            password: editSoftForm.password.value
         }
 
         request.onload = () => {
@@ -195,7 +196,7 @@ if(editSoftForm.username != undefined){
             }
 
             if(responseObject){
-                editSoftResponse(responseObject)
+                singleResponse(responseObject, editSoftForm);
             }
         }
 
@@ -207,21 +208,99 @@ if(editSoftForm.username != undefined){
     })
 }
 
-function editSoftResponse(responseObject){
-    const response = JSON.parse(JSON.parse(responseObject));
-    if(response.ok){
-        location.reload();
-    } else {
-            while (editSoftForm.error.firstChild) {
-                editSoftForm.error.removeChild(editSoftForm.error.firstChild);
+// change password
+
+const editPassowrdForm = {
+    oldPassword: document.getElementById('edit-password-old'),
+    newPassword: document.getElementById('edit-password-new'),
+    repeatPassword: document.getElementById('edit-password-repeat'),
+    submit: document.getElementById('edit-password-submit'),
+    error: document.getElementById('edit-password-error-message')
+};
+
+if(editPassowrdForm.oldPassword != undefined){
+    editPassowrdForm.submit.addEventListener('click', e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+
+        const requestData = {
+            oldPassword: editPassowrdForm.oldPassword.value,
+            newPassword: editPassowrdForm.newPassword.value,
+            repeatPassword: editPassowrdForm.repeatPassword.value
+        }
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = JSON.stringify(request.responseText);
+                
+            } catch(e) {
+                console.error('Could not parse JSON');
             }
-    
-            response.error.forEach(error => {
-                const li = document.createElement('li');
-                li.textContent = error;
-                editSoftForm.error.appendChild(li);
-            });
-    
-            editSoftForm.error.style.display = "block";
-    }
+            if(responseObject){
+                singleResponse(responseObject, editPassowrdForm);
+                
+            }
+        }
+        const fields = JSON.stringify(requestData)
+        request.open('post', '/Code1/functions/editPassword.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(fields);
+    });
+}
+
+// delete account
+
+const delBtn = document.querySelector('.delete-button');
+
+if(delBtn != undefined){
+    const delPopup = document.querySelector('.delete-popup')
+    const closeDelContent = document.querySelector('.close-delete-popup');
+
+    delBtn.addEventListener('click', e => {
+        e.preventDefault();
+        delPopup.style.display = "block";
+    });
+    closeDelContent.addEventListener('click', e => {
+        e.preventDefault();
+        delPopup.style.display = 'none';
+    })
+
+    delPopup.addEventListener('click', e => {
+        if(e.target == delPopup){
+            delPopup.style.display = "none";
+        }
+    })
+}
+const delAccountForm = {
+    password: document.getElementById('password-delete'),
+    submit: document.getElementById('submit-delete'),
+    error: document.getElementById('delete-error-message')
+}
+if(delAccountForm.submit != undefined){
+    delAccountForm.submit.addEventListener('click', e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+
+        const requestData = {
+            password: delAccountForm.password.value
+        };
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = JSON.stringify(request.responseText);
+            } catch(e) {
+                console.error('Could not parse JSON');
+            }
+            if(responseObject){
+                singleResponse(responseObject, delAccountForm);
+            }
+        }
+        const fields = JSON.stringify(requestData);
+
+        request.open('post', '/Code1/functions/deleteAccount.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(fields);     
+    })
 }

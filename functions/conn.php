@@ -62,11 +62,19 @@ class Database {
                             $stmt_e->bindParam(':email', $email, PDO::PARAM_STR);
                             $stmt_e->execute();
                             if($stmt_e->rowCount() > 0){
-                                $this->error[] = "Istnieje już taki użytkownik";
+                                $this->error[] = "Ten E-mail jest już użyty";
                                 $this->ok =false;
                             } else {
-                                $stmt->execute();
-                                $this->error[] = "Rejestracja powiodła się";
+                                $stmt_u = $this->con->prepare("SELECT username FROM $tableName WHERE username = :username");
+                                $stmt_u->bindParam(':username', $userName, PDO::PARAM_STR);
+                                $stmt_u->execute();
+                                if($stmt_u->rowCount() > 0){
+                                    $this->error[] = "Ta nazwa użytkownika jest już zajęta";
+                                    $this->ok =false;
+                                } else {
+                                    $stmt->execute();
+                                    $this->error[] = "Rejestracja powiodła się";
+                                }
                             }
                         } else {
                             $this->error[] = "E-mail jest nie poprawny";
@@ -147,22 +155,40 @@ class Database {
             if(filter_var($email, FILTER_VALIDATE_EMAIL)){
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                     if(password_verify($password, $row['password'])){
-                        $stmtU = $this->con->prepare("UPDATE $tableName SET username = :username, email = :email WHERE username = :orginalUsername");
-                        $stmtU->bindParam(':username', $username, PDO::PARAM_STR);
-                        $stmtU->bindParam(':email', $email, PDO::PARAM_STR);
-                        $stmtU->bindParam(':orginalUsername', $orginalUsername, PDO::PARAM_STR);
-                        $stmtU->execute();
-                        
-                        $stmtN = $this->con->prepare("SELECT username, email FROM $tableName WHERE userID = :userID");
-                        $stmtN->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
-                        $stmtN->execute();
+                        $stmt_e = $this->con->prepare("SELECT email FROM $tableName WHERE email = :email AND NOT userID = :userID");
+                        $stmt_e->bindParam(':email', $email, PDO::PARAM_STR);
+                        $stmt_e->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                        $stmt_e->execute();
+                        if($stmt_e->rowCount() > 0){
+                            $this->ok = false;
+                            $this->error[] = 'Istnieje już taki e-mail';
+                        } else {
+                            $stmt_u = $this->con->prepare("SELECT username FROM $tableName WHERE username = :username AND NOT userID = :userID");
+                            $stmt_u->bindParam(':username', $username, PDO::PARAM_STR);
+                            $stmt_u->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                            $stmt_u->execute();
+                            if($stmt_u->rowCount() > 0){
+                                $this->ok = false;
+                                $this->error[] = 'Ta nazwa już jest zajęta';
+                            } else {
+                                $stmtU = $this->con->prepare("UPDATE $tableName SET username = :username, email = :email WHERE username = :orginalUsername");
+                                $stmtU->bindParam(':username', $username, PDO::PARAM_STR);
+                                $stmtU->bindParam(':email', $email, PDO::PARAM_STR);
+                                $stmtU->bindParam(':orginalUsername', $orginalUsername, PDO::PARAM_STR);
+                                $stmtU->execute();
+                                
+                                $stmtN = $this->con->prepare("SELECT username, email FROM $tableName WHERE userID = :userID");
+                                $stmtN->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                                $stmtN->execute();
 
-                        while($rowN = $stmtN->fetch(PDO::FETCH_ASSOC)){
-                            $_SESSION['username'] = $rowN['username'];
-                            $_SESSION['email'] = $rowN['email'];
+                                while($rowN = $stmtN->fetch(PDO::FETCH_ASSOC)){
+                                    $_SESSION['username'] = $rowN['username'];
+                                    $_SESSION['email'] = $rowN['email'];
+                                    
+                                }
+                            }
                             
                         }
-        
                     } else {
                         $this->ok = false;
                         $this->error[] = 'Niepoprawne hasło';
@@ -170,13 +196,75 @@ class Database {
                 } 
             } else {
                 $this->ok = false;
-                $this->eror[] ="Niepoprawny E-mail";
+                $this->error[] ="Niepoprawny E-mail";
             }
         } else {
             $this->ok = false;
-            $this->eror[] ="Nazwa użytkownika musi mieć więcej niż 4 znaki";
+            $this->error[] ="Nazwa użytkownika musi mieć więcej niż 4 znaki";
         }
         
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+    }
+
+    public function editPassword($tableName, $fields){
+        $oldPassword = $fields['oldPassword'];
+        $newPassword = $fields['newPassword'];
+        $repeatPassword = $fields['repeatPassword'];
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
+        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt->execute();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            if(password_verify($oldPassword, $row['password'])){
+                if(strlen($newPassword) > 4){
+                    if($newPassword === $repeatPassword){
+                        $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
+                        $stmtIns = $this->con->prepare("UPDATE $tableName SET password = :newPassword WHERE username = :username");
+                        $stmtIns->bindParam(':newPassword', $passwordHashed, PDO::PARAM_STR);
+                        $stmtIns->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                        $stmtIns->execute();
+                    } else {
+                        $this->ok = false;
+                        $this->error[] = 'Nowe hasła różnią się';
+                    }
+                } else {
+                    $this->ok = false;
+                    $this->error[] = 'Nowe hasło musi mieć więcej niż 4 znaki';
+                }
+            } else {
+                $this->ok = false;
+                $this->error[] = 'Niepoprawne hasło';
+            }
+        }
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+    }
+
+    public function deleteAccount($tableName, $field){
+        $password = $field['password'];
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
+        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if(password_verify($password, $row['password'])){
+                $stmtDel = $this->con->prepare("DELETE FROM $tableName WHERE username = :username");
+                $stmtDel->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                $stmtDel->execute();
+                session_unset();
+                session_destroy();
+            } else {
+                $this->ok = false;
+                $this->error[] = 'Złe hasło';
+            }
+        }
         echo json_encode(
             array(
                 'ok' => $this->ok,

@@ -42,7 +42,7 @@
                         </a>
                     </ul>
                     <div class='user-icon'>
-                        <span>".$_SESSION['username'][0]."</span>
+                        <span>".strtoupper($_SESSION['username'][0])."</span>
                         <div class='user-sub-menu'>
                             <ul>
                                 <div class='username'>
