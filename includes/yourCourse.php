@@ -1,3 +1,8 @@
+<?php
+    if(!isset($_SESSION['username'])){
+        header("Location: /Code1/home");
+    }
+?>
 <div class="your-course-container">
     <div class="video-container">
         <video
