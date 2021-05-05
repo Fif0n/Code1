@@ -106,18 +106,17 @@ class Database {
         $password = $fields['password'];
             $stmt = $this->con->prepare("SELECT * FROM $tableName WHERE username = :username");
             $stmt->bindParam(':username', $login, PDO::PARAM_STR);
-            // $stmt->bindParam(':password', $password, PDO::PARAM_STR); + "AND password = :password" <- problem, bo nie możemy porównać hasła podanego z zahashowanym w bazie danych w zapytaniu
             $stmt->execute();
                        
                 if($stmt->rowCount() <= 0){
                     $this->error[] = "Zły login lub hasło";
                     $this->ok =false;
                 } else {
-                    // przy dwóch takich samych loginach nie można się na drugiego użytkownika zalogować
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                         if(password_verify($fields['password'], $row['password'])){
                             session_start();
-                            $_SESSION['username'] = $login;
+                            $_SESSION['userID'] = $row['userID'];
+                            $_SESSION['username'] = $row['username'];
                             $_SESSION['email'] = $row['email'];
                             $this->error[] ='sukces';
                         } else {
@@ -143,12 +142,13 @@ class Database {
         header("Location: /Code1/");
     }
 
-    public function editSoftData($tableName, $fields, $orginalUsername){
+    public function editSoftData($tableName, $fields, $orginalUsername, $userID){
         $username = $fields['username'];
         $email = $fields['email'];
         $password = $fields['password'];
-        $stmt = $this->con->prepare("SELECT password, userID FROM $tableName WHERE username = :orginalUsername");
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :orginalUsername AND userID = :userID");
         $stmt->bindParam(':orginalUsername', $orginalUsername, PDO::PARAM_STR);
+        $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
         $stmt->execute();
 
         if(strlen($username) > 4){
@@ -157,7 +157,7 @@ class Database {
                     if(password_verify($password, $row['password'])){
                         $stmt_e = $this->con->prepare("SELECT email FROM $tableName WHERE email = :email AND NOT userID = :userID");
                         $stmt_e->bindParam(':email', $email, PDO::PARAM_STR);
-                        $stmt_e->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                        $stmt_e->bindParam(':userID', $userID, PDO::PARAM_STR);
                         $stmt_e->execute();
                         if($stmt_e->rowCount() > 0){
                             $this->ok = false;
@@ -165,7 +165,7 @@ class Database {
                         } else {
                             $stmt_u = $this->con->prepare("SELECT username FROM $tableName WHERE username = :username AND NOT userID = :userID");
                             $stmt_u->bindParam(':username', $username, PDO::PARAM_STR);
-                            $stmt_u->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                            $stmt_u->bindParam(':userID', $userID, PDO::PARAM_STR);
                             $stmt_u->execute();
                             if($stmt_u->rowCount() > 0){
                                 $this->ok = false;
@@ -178,7 +178,7 @@ class Database {
                                 $stmtU->execute();
                                 
                                 $stmtN = $this->con->prepare("SELECT username, email FROM $tableName WHERE userID = :userID");
-                                $stmtN->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                                $stmtN->bindParam(':userID', $userID, PDO::PARAM_STR);
                                 $stmtN->execute();
 
                                 while($rowN = $stmtN->fetch(PDO::FETCH_ASSOC)){
@@ -215,17 +215,17 @@ class Database {
         $oldPassword = $fields['oldPassword'];
         $newPassword = $fields['newPassword'];
         $repeatPassword = $fields['repeatPassword'];
-        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
-        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE userID = :userID");
+        $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
         $stmt->execute();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             if(password_verify($oldPassword, $row['password'])){
                 if(strlen($newPassword) > 4){
                     if($newPassword === $repeatPassword){
                         $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
-                        $stmtIns = $this->con->prepare("UPDATE $tableName SET password = :newPassword WHERE username = :username");
+                        $stmtIns = $this->con->prepare("UPDATE $tableName SET password = :newPassword WHERE userID = :userID");
                         $stmtIns->bindParam(':newPassword', $passwordHashed, PDO::PARAM_STR);
-                        $stmtIns->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                        $stmtIns->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
                         $stmtIns->execute();
                     } else {
                         $this->ok = false;
@@ -250,13 +250,13 @@ class Database {
 
     public function deleteAccount($tableName, $field){
         $password = $field['password'];
-        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
-        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE userID = :userID");
+        $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if(password_verify($password, $row['password'])){
-                $stmtDel = $this->con->prepare("DELETE FROM $tableName WHERE username = :username");
-                $stmtDel->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                $stmtDel = $this->con->prepare("DELETE FROM $tableName WHERE userID = :userID");
+                $stmtDel->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
                 $stmtDel->execute();
                 session_unset();
                 session_destroy();

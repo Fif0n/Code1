@@ -22,6 +22,8 @@
         include 'includes/yourCourses.php';
     } else if ($view == 'yourCourse'){
         include 'includes/yourCourse.php';
+    } else if ($view == 'createCourse'){
+        include 'includes/createCourseForm.php';
     } else {
         include 'includes/notFound.php';
     }

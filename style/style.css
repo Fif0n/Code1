@@ -735,8 +735,41 @@ section h1 {
 }
 .section-nav .active {
     background-color: var(--light-button);
-
 }
+
+/* create course */
+.create-course-container {
+    display: flex;
+    flex-direction: column;
+}
+.create-course-container form {
+    display: flex;
+    flex-direction: column;
+    margin: 40px 0;
+}
+.create-course-container form input, .create-course-container form label, .create-course-container form button, .create-course-container form textarea {
+    width: 50%;
+    margin: 5px auto;
+    outline: none;
+    font-size: 18px;
+}
+.create-course-container form input[type="text"], .create-course-container form input[type="number"], .create-course-container form button {
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+.create-course-container form input[type="text"], .create-course-container form input[type="number"] {
+    padding-left: 20px;
+}
+.create-course-container form button {
+    background-color: #5bc0de;
+    margin: 20px auto;
+    transition: background-color .2s;
+}
+.create-course-container form button:hover {
+    background-color: #0275d8;
+}
+
 /* footer */
 
 footer {

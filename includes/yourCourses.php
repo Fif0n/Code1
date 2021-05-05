@@ -144,7 +144,7 @@
                     </a>
                 </div>
                 <div class='add-course'>
-                    <button>Opublikuj nowy kurs</button>
+                    <a href='/Code1/createCourse/'><button>Opublikuj nowy kurs</button></a>
                 </div>
             </div>";
             }
