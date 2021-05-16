@@ -19,7 +19,12 @@
             } else {
                 $subPage = "";
             }
-
+            $data = new Database;
+            $stmt = $data->con->prepare("SELECT * FROM course JOIN relation ON course.courseID = relation.courseID JOIN user ON user.userID = relation.userID WHERE course.courseID = relation.courseID AND relation.userID = :userID AND relation.published = 1");
+            $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
+            $stmt->execute();
+            
+           
             if($subPage == ""){
                 echo "<div class='bought-courses'>
                     <a href='/Code1/yourCourse/1/'>
@@ -119,34 +124,47 @@
                     </a>
                 </div>";
             } else if($subPage == "publishedCourses"){
-                echo "<div class='published-courses'>
-                    <a href='/Code1/yourCourse/12/'>
-                        <div class='course-card'>
-                            <img src='/Code1/photos/course-miniature.jpg' alt=''>
-                            <div class='course-info'>
-                                <h3>Tytuł</h3>
-                                <p>ocena</p>
-                                <p>liczba zakupień: 2</p>
-                                <p>liczba opinii</p>
+                echo "<div class='published-courses'>";
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                    $tags = json_decode($row['tags']);
+                    echo "
+                        <a href='/Code1/yourCourse/".$row['courseID']."/'>
+                            <div class='course-card'>
+                                <img src='/Code1/miniatures/".$row['photoSource']."' alt=''>
+                                <div class='course-info'>
+                                    <h3>".$row['name']."</h3>
+                                    <p>średnia ocena:";
+                                    $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.courseID = opinion.courseID WHERE opinion.courseID = :courseID");
+                                    $ratings->bindParam(":courseID", $row['courseID'], PDO::PARAM_STR);
+                                    $ratings->execute();
+                                    while($rate = $ratings->fetch(PDO::FETCH_ASSOC)){
+                                        echo " ". $rate['ratingAVG']. " (".$rate['ratingCOUNT'] . ")";
+                                    }
+                                    echo "</p>
+                                    <p>liczba zakupień: ";
+                                    $boughtCount = $data->con->prepare("SELECT COUNT(relation.bought) AS boughtCOUNT FROM relation JOIN course ON relation.courseID = course.courseID WHERE relation.bought = 1 AND relation.courseID = :courseID");
+                                    $boughtCount->bindParam(":courseID", $row['courseID'], PDO::PARAM_STR);
+                                    $boughtCount->execute();
+                                    while($bought = $boughtCount->fetch(PDO::FETCH_ASSOC)){
+                                        echo $bought['boughtCOUNT'];
+                                    }
+                                    echo "</p>
+                                    <p>";
+                                    foreach($tags as $tag){
+                                        echo "<em>$tag</em>";
+                                    }
+                                    echo "</p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                    <a href='/Code1/yourCourse/16/'>
-                        <div class='course-card'>
-                            <img src='/Code1/photos/course-miniature.jpg' alt=''>
-                            <div class='course-info'>
-                                <h3>Tytuł</h3>
-                                <p>ocena</p>
-                                <p>liczba zakupień: 2</p>
-                                <p>liczba opinii</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                     ";
+                }
+                echo "</div>
                 <div class='add-course'>
-                    <button>Opublikuj nowy kurs</button>
+                        <a href='/Code1/createCourse/'><button>Opublikuj nowy kurs</button></a>
+                    </div>
                 </div>
-            </div>";
+                ";
             }
         ?>
             

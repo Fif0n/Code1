@@ -106,18 +106,17 @@ class Database {
         $password = $fields['password'];
             $stmt = $this->con->prepare("SELECT * FROM $tableName WHERE username = :username");
             $stmt->bindParam(':username', $login, PDO::PARAM_STR);
-            // $stmt->bindParam(':password', $password, PDO::PARAM_STR); + "AND password = :password" <- problem, bo nie możemy porównać hasła podanego z zahashowanym w bazie danych w zapytaniu
             $stmt->execute();
                        
                 if($stmt->rowCount() <= 0){
                     $this->error[] = "Zły login lub hasło";
                     $this->ok =false;
                 } else {
-                    // przy dwóch takich samych loginach nie można się na drugiego użytkownika zalogować
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                         if(password_verify($fields['password'], $row['password'])){
                             session_start();
-                            $_SESSION['username'] = $login;
+                            $_SESSION['userID'] = $row['userID'];
+                            $_SESSION['username'] = $row['username'];
                             $_SESSION['email'] = $row['email'];
                             $this->error[] ='sukces';
                         } else {
@@ -143,12 +142,13 @@ class Database {
         header("Location: /Code1/");
     }
 
-    public function editSoftData($tableName, $fields, $orginalUsername){
+    public function editSoftData($tableName, $fields, $orginalUsername, $userID){
         $username = $fields['username'];
         $email = $fields['email'];
         $password = $fields['password'];
-        $stmt = $this->con->prepare("SELECT password, userID FROM $tableName WHERE username = :orginalUsername");
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :orginalUsername AND userID = :userID");
         $stmt->bindParam(':orginalUsername', $orginalUsername, PDO::PARAM_STR);
+        $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
         $stmt->execute();
 
         if(strlen($username) > 4){
@@ -157,7 +157,7 @@ class Database {
                     if(password_verify($password, $row['password'])){
                         $stmt_e = $this->con->prepare("SELECT email FROM $tableName WHERE email = :email AND NOT userID = :userID");
                         $stmt_e->bindParam(':email', $email, PDO::PARAM_STR);
-                        $stmt_e->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                        $stmt_e->bindParam(':userID', $userID, PDO::PARAM_STR);
                         $stmt_e->execute();
                         if($stmt_e->rowCount() > 0){
                             $this->ok = false;
@@ -165,7 +165,7 @@ class Database {
                         } else {
                             $stmt_u = $this->con->prepare("SELECT username FROM $tableName WHERE username = :username AND NOT userID = :userID");
                             $stmt_u->bindParam(':username', $username, PDO::PARAM_STR);
-                            $stmt_u->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                            $stmt_u->bindParam(':userID', $userID, PDO::PARAM_STR);
                             $stmt_u->execute();
                             if($stmt_u->rowCount() > 0){
                                 $this->ok = false;
@@ -178,7 +178,7 @@ class Database {
                                 $stmtU->execute();
                                 
                                 $stmtN = $this->con->prepare("SELECT username, email FROM $tableName WHERE userID = :userID");
-                                $stmtN->bindParam(':userID', $row['userID'], PDO::PARAM_STR);
+                                $stmtN->bindParam(':userID', $userID, PDO::PARAM_STR);
                                 $stmtN->execute();
 
                                 while($rowN = $stmtN->fetch(PDO::FETCH_ASSOC)){
@@ -187,7 +187,6 @@ class Database {
                                     
                                 }
                             }
-                            
                         }
                     } else {
                         $this->ok = false;
@@ -215,17 +214,17 @@ class Database {
         $oldPassword = $fields['oldPassword'];
         $newPassword = $fields['newPassword'];
         $repeatPassword = $fields['repeatPassword'];
-        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
-        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE userID = :userID");
+        $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
         $stmt->execute();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             if(password_verify($oldPassword, $row['password'])){
                 if(strlen($newPassword) > 4){
                     if($newPassword === $repeatPassword){
                         $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
-                        $stmtIns = $this->con->prepare("UPDATE $tableName SET password = :newPassword WHERE username = :username");
+                        $stmtIns = $this->con->prepare("UPDATE $tableName SET password = :newPassword WHERE userID = :userID");
                         $stmtIns->bindParam(':newPassword', $passwordHashed, PDO::PARAM_STR);
-                        $stmtIns->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                        $stmtIns->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
                         $stmtIns->execute();
                     } else {
                         $this->ok = false;
@@ -250,13 +249,13 @@ class Database {
 
     public function deleteAccount($tableName, $field){
         $password = $field['password'];
-        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE username = :username");
-        $stmt->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+        $stmt = $this->con->prepare("SELECT password FROM $tableName WHERE userID = :userID");
+        $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if(password_verify($password, $row['password'])){
-                $stmtDel = $this->con->prepare("DELETE FROM $tableName WHERE username = :username");
-                $stmtDel->bindParam(':username', $_SESSION['username'], PDO::PARAM_STR);
+                $stmtDel = $this->con->prepare("DELETE FROM $tableName WHERE userID = :userID");
+                $stmtDel->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
                 $stmtDel->execute();
                 session_unset();
                 session_destroy();
@@ -265,6 +264,100 @@ class Database {
                 $this->error[] = 'Złe hasło';
             }
         }
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+    }
+
+    public function createCourse(){
+        if(!empty($_POST['courseName']) && !empty($_POST['courseDescription']) && !empty($_FILES['courseMiniature']) && !empty($_FILES['courseVideo']) && !empty($_POST['courseTags']) && !empty($_POST['coursePrize'])){
+            $courseName = $_POST['courseName'];
+            $courseDescription = $_POST['courseDescription'];
+            $courseMiniature = $_FILES['courseMiniature'];
+            $courseVideo = $_FILES['courseVideo'];
+            $courseTags = $_POST['courseTags'];
+            $coursePrize = $_POST['coursePrize'];
+
+            $tags = explode(',', $courseTags);
+                    
+            $trimedTags = array();
+            foreach($tags as $tag){
+                $trimedTags[] = trim($tag);
+            }
+
+            $miniatureExt = explode('/', $courseMiniature['type']);
+            $videoExt = explode('/', $courseVideo['type']);
+
+            $allowedMiniatureExt = array('jpg', 'png', 'jpeg');
+            $allowedVideoExt = array('mp4');
+            if($courseMiniature['error'] === 0){
+                if($courseVideo['error'] === 0){
+                    if(in_array($miniatureExt[1], $allowedMiniatureExt)){
+                        if(in_array($videoExt[1], $allowedVideoExt)){
+                            $stmt = $this->con->prepare("SELECT * FROM course WHERE name = :name");
+                            $stmt->bindParam(":name", $courseName, PDO::PARAM_STR);
+                            $stmt->execute();
+                            if($stmt->rowCount() == 0){
+
+                                $fileUniqid = uniqid("" ,true);
+                                $newPhotoName = "$fileUniqid." . $miniatureExt[1];
+                                $newVideoName = "$fileUniqid." . $videoExt[1];
+                                $jsonTags = json_encode($trimedTags);
+                                    $courseIns = $this->con->prepare("INSERT INTO course (name, prize, description, photoSource, videoSource, tags) VALUES (:name, :prize, :description, :photoSource, :videoSource, :tags)");
+                                    $courseIns->bindParam(':name', $courseName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':prize', $coursePrize, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':description', $courseDescription, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':photoSource', $newPhotoName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':videoSource', $newVideoName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':tags', $jsonTags, PDO::PARAM_STR);
+                                    $courseIns->execute();
+
+                                    $relationDate = date("Y-m-d");
+
+                                    $courseID = $this->con->prepare("SELECT courseID FROM course WHERE name = :name");
+                                    $courseID->bindParam(":name", $courseName, PDO::PARAM_STR);
+                                    $courseID->execute();
+                                    move_uploaded_file($courseMiniature['tmp_name'], "../miniatures/$newPhotoName");
+                                    move_uploaded_file($courseVideo['tmp_name'], "../videos/$newVideoName");
+                                    while($row = $courseID->fetch(PDO::FETCH_ASSOC)){
+                                        $relationIns = $this->con->prepare("INSERT INTO relation (bought, published, currentTime, relationDate, courseID, userID) VALUES (0, 1, 0, :relationDate, :courseID, :userID)");
+                                        $relationIns->bindParam(':relationDate', $relationDate, PDO::PARAM_STR);
+                                        $relationIns->bindParam(':courseID', $row['courseID'], PDO::PARAM_STR);
+                                        $relationIns->bindParam(':userID', $_SESSION['userID']);
+                                        $relationIns->execute();
+                                    }
+                                    $this->error[] = 'Kurs został opublikowany';
+                            } else {
+                                $this->error[] = 'Istnieje już taka nazwa kursu';
+                                $this->ok = false;
+                            }
+                        } else {
+                            $this->error[] = 'Niepoprawyne rozszerzenie video. Dozwolone to mp4';
+                            $this->ok = false;
+                        }
+                    } else {
+                        $this->error[] = 'Niepoprawyne rozszerzenie zdjęcia. Dozwolone to png, jpg i jpeg';
+                        $this->ok = false;
+                    }
+                } else {
+                    $this->error[] = 'Plik video jest zepsuty';
+                    $this->ok = false;
+                }
+            } else {
+                $this->error[] = 'Plik miniatury jest zepsuty';
+                $this->ok = false;
+            }
+            
+
+        } else {
+            $this->error[] = 'Wszystkie pola muszą być uzupełnione!';
+            $this->ok = false;
+        }
+      
+        
         echo json_encode(
             array(
                 'ok' => $this->ok,

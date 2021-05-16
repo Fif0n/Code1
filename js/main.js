@@ -81,6 +81,43 @@ function doubleResponse(responseObject, form){
         }
 }
 
+function createCourseResponse(responseObject, form){
+    const response = JSON.parse(responseObject);
+        if (response.ok) {
+            form.courseName.value = "";
+            form.courseDescription.value = "";
+            form.courseMiniature.value = "";
+            form.courseVideo.value = "";
+            form.courseTags.value = "";
+            form.coursePrize.value = "";
+            form.error.style.display = "none";
+            while (form.success.firstChild) {
+                form.success.removeChild(form.success.firstChild);
+            }
+    
+            response.error.forEach(success => {
+                const li = document.createElement('li');
+                li.textContent = success;
+                form.success.appendChild(li);
+            });
+    
+            form.success.style.display = "block";
+        } else {
+            form.success.style.display = "none";
+            while (form.error.firstChild) {
+                form.error.removeChild(form.error.firstChild);
+            }
+    
+            response.error.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                form.error.appendChild(li);
+            });
+    
+            form.error.style.display = "block";
+        }
+}
+
 const registerForm = {
     username: document.getElementById('r_username'),
     email: document.getElementById('r_email'),
@@ -302,5 +339,49 @@ if(delAccountForm.submit != undefined){
         request.open('post', '/Code1/functions/deleteAccount.php');
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(fields);     
+    })
+}
+
+//  creating course
+const createCourseForm = {
+    courseName: document.getElementById('course-name'),
+    courseDescription: document.getElementById('course-description'),
+    courseMiniature: document.getElementById('course-miniature'),
+    courseVideo: document.getElementById('course-video'),
+    courseTags: document.getElementById('tags'),
+    coursePrize: document.getElementById('prize'),
+    submit: document.getElementById('create-course-submit'),
+    error: document.getElementById('create-course-error-message'),
+    success: document.getElementById('create-course-success-message')
+}
+
+if(createCourseForm.submit != undefined){
+    createCourseForm.submit.addEventListener('click', e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+        var requestData = new FormData();
+
+        requestData.append('courseName', createCourseForm.courseName.value)
+        requestData.append('courseDescription', createCourseForm.courseDescription.value)
+        requestData.append("courseMiniature", createCourseForm.courseMiniature.files[0]);
+        requestData.append("courseVideo", createCourseForm.courseVideo.files[0]);
+        requestData.append("courseTags", createCourseForm.courseTags.value);
+        requestData.append("coursePrize", createCourseForm.coursePrize.value);
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = request.responseText;
+            } catch(e) {
+                console.error('Could not parse JSON');
+            }
+            if(responseObject){
+                createCourseResponse(responseObject, createCourseForm);
+            }
+        }
+
+        request.open('post', '/Code1/functions/createCourse.php');
+        
+        request.send(requestData);  
     })
 }
