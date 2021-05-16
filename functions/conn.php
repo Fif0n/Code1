@@ -187,7 +187,6 @@ class Database {
                                     
                                 }
                             }
-                            
                         }
                     } else {
                         $this->ok = false;
@@ -265,6 +264,100 @@ class Database {
                 $this->error[] = 'Złe hasło';
             }
         }
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+    }
+
+    public function createCourse(){
+        if(!empty($_POST['courseName']) && !empty($_POST['courseDescription']) && !empty($_FILES['courseMiniature']) && !empty($_FILES['courseVideo']) && !empty($_POST['courseTags']) && !empty($_POST['coursePrize'])){
+            $courseName = $_POST['courseName'];
+            $courseDescription = $_POST['courseDescription'];
+            $courseMiniature = $_FILES['courseMiniature'];
+            $courseVideo = $_FILES['courseVideo'];
+            $courseTags = $_POST['courseTags'];
+            $coursePrize = $_POST['coursePrize'];
+
+            $tags = explode(',', $courseTags);
+                    
+            $trimedTags = array();
+            foreach($tags as $tag){
+                $trimedTags[] = trim($tag);
+            }
+
+            $miniatureExt = explode('/', $courseMiniature['type']);
+            $videoExt = explode('/', $courseVideo['type']);
+
+            $allowedMiniatureExt = array('jpg', 'png', 'jpeg');
+            $allowedVideoExt = array('mp4');
+            if($courseMiniature['error'] === 0){
+                if($courseVideo['error'] === 0){
+                    if(in_array($miniatureExt[1], $allowedMiniatureExt)){
+                        if(in_array($videoExt[1], $allowedVideoExt)){
+                            $stmt = $this->con->prepare("SELECT * FROM course WHERE name = :name");
+                            $stmt->bindParam(":name", $courseName, PDO::PARAM_STR);
+                            $stmt->execute();
+                            if($stmt->rowCount() == 0){
+
+                                $fileUniqid = uniqid("" ,true);
+                                $newPhotoName = "$fileUniqid." . $miniatureExt[1];
+                                $newVideoName = "$fileUniqid." . $videoExt[1];
+                                $jsonTags = json_encode($trimedTags);
+                                    $courseIns = $this->con->prepare("INSERT INTO course (name, prize, description, photoSource, videoSource, tags) VALUES (:name, :prize, :description, :photoSource, :videoSource, :tags)");
+                                    $courseIns->bindParam(':name', $courseName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':prize', $coursePrize, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':description', $courseDescription, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':photoSource', $newPhotoName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':videoSource', $newVideoName, PDO::PARAM_STR);
+                                    $courseIns->bindParam(':tags', $jsonTags, PDO::PARAM_STR);
+                                    $courseIns->execute();
+
+                                    $relationDate = date("Y-m-d");
+
+                                    $courseID = $this->con->prepare("SELECT courseID FROM course WHERE name = :name");
+                                    $courseID->bindParam(":name", $courseName, PDO::PARAM_STR);
+                                    $courseID->execute();
+                                    move_uploaded_file($courseMiniature['tmp_name'], "../miniatures/$newPhotoName");
+                                    move_uploaded_file($courseVideo['tmp_name'], "../videos/$newVideoName");
+                                    while($row = $courseID->fetch(PDO::FETCH_ASSOC)){
+                                        $relationIns = $this->con->prepare("INSERT INTO relation (bought, published, currentTime, relationDate, courseID, userID) VALUES (0, 1, 0, :relationDate, :courseID, :userID)");
+                                        $relationIns->bindParam(':relationDate', $relationDate, PDO::PARAM_STR);
+                                        $relationIns->bindParam(':courseID', $row['courseID'], PDO::PARAM_STR);
+                                        $relationIns->bindParam(':userID', $_SESSION['userID']);
+                                        $relationIns->execute();
+                                    }
+                                    $this->error[] = 'Kurs został opublikowany';
+                            } else {
+                                $this->error[] = 'Istnieje już taka nazwa kursu';
+                                $this->ok = false;
+                            }
+                        } else {
+                            $this->error[] = 'Niepoprawyne rozszerzenie video. Dozwolone to mp4';
+                            $this->ok = false;
+                        }
+                    } else {
+                        $this->error[] = 'Niepoprawyne rozszerzenie zdjęcia. Dozwolone to png, jpg i jpeg';
+                        $this->ok = false;
+                    }
+                } else {
+                    $this->error[] = 'Plik video jest zepsuty';
+                    $this->ok = false;
+                }
+            } else {
+                $this->error[] = 'Plik miniatury jest zepsuty';
+                $this->ok = false;
+            }
+            
+
+        } else {
+            $this->error[] = 'Wszystkie pola muszą być uzupełnione!';
+            $this->ok = false;
+        }
+      
+        
         echo json_encode(
             array(
                 'ok' => $this->ok,

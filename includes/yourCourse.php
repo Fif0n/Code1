@@ -5,15 +5,26 @@
 ?>
 <div class="your-course-container">
     <div class="video-container">
+        <?php
+            $data = new Database;
+            $courseID = $_GET['id'];
+            $stmt = $data->con->prepare("SELECT * FROM course JOIN relation ON course.courseID = relation.courseID JOIN user ON user.userID = relation.userID WHERE course.courseID = :courseID AND relation.userID = :userID");
+            $stmt->bindParam(':courseID', $courseID, PDO::PARAM_STR);
+            $stmt->bindParam(':userID', $_SESSION['userID'], PDO::PARAM_STR);
+            $stmt->execute();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+            
+        ?>
         <video
         id="my-video"
         class="video-js"
         controls
         preload="auto"
-        poster="photos/course-miniature.jpg"
+        poster="/Code1/miniatures/<?=$row['photoSource']?>"
         data-setup="{}"
         >
-            <source src="/Code1/videos/89818138_694521017753723_8841380106564796416_n.mp4" type="video/mp4" />
+            <source src="/Code1/videos/<?=$row['videoSource']?>" type="video/mp4" />
             <source src="MY_VIDEO.webm" type="video/webm" />
             <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
@@ -41,28 +52,29 @@
         </div>
         <div class="section-content">
         <?php
-        if(isset($_GET['subPage'])){
-            $subPage = $_GET['subPage'];
-        } else {
-            $subPage = "";
-        }
+            if(isset($_GET['subPage'])){
+                $subPage = $_GET['subPage'];
+            } else {
+                $subPage = "";
+            }
 
-       
+            
 
-        if($subPage == ""){
-            echo "<div class='course-description'>
-                <h1>O kursie nr $id</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, blanditiis ex optio dolorum error repellat non quod sed consectetur suscipit cum expedita laudantium illum maiores alias mollitia ullam delectus dicta. Mollitia necessitatibus inventore dolores? Temporibus, at illo labore error inventore minus odit voluptas fugiat officia blanditiis iusto iure, enim eius, provident minima fugit maxime similique rerum iste harum nobis nulla!</p>
-            </div>";
-        } else if ($subPage == "courseDescription"){
-            echo "<div class='course-description'>
-                <h1>O kursie nr $id</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, blanditiis ex optio dolorum error repellat non quod sed consectetur suscipit cum expedita laudantium illum maiores alias mollitia ullam delectus dicta. Mollitia necessitatibus inventore dolores? Temporibus, at illo labore error inventore minus odit voluptas fugiat officia blanditiis iusto iure, enim eius, provident minima fugit maxime similique rerum iste harum nobis nulla!</p>
-            </div>";
-        } else if ($subPage == "courseOpinions"){
-            echo "<div class='course-opinions'>
-                    opinie
+            if($subPage == ""){
+                echo "<div class='course-description'>
+                    <h1>O kursie nr ".$row['name']."</h1>
+                    <p>".$row['description']."</p>
                 </div>";
+            } else if ($subPage == "courseDescription"){
+                echo "<div class='course-description'>
+                    <h1>O kursie nr ".$row['name']."</h1>
+                    <p>".$row['description']."</p>
+                </div>";
+            } else if ($subPage == "courseOpinions"){
+                echo "<div class='course-opinions'>
+                        opinions
+                    </div>";
+            }
         }
         ?>
             
