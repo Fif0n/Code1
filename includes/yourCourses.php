@@ -128,7 +128,7 @@
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                     $tags = json_decode($row['tags']);
                     echo "
-                        <a href='/Code1/yourCourse/".$row['courseID']."/'>
+                        <a href='/Code1/yourCourse/".$row['courseID']."'>
                             <div class='course-card'>
                                 <img src='/Code1/miniatures/".$row['photoSource']."' alt=''>
                                 <div class='course-info'>

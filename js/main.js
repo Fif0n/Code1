@@ -1,3 +1,44 @@
+// video 
+
+if(document.querySelector("#my-video") != undefined){
+    var video = videojs('my-video');
+    
+    const url = window.location.href;
+    const id = url.slice(34, 35);
+    window.addEventListener("beforeunload", () => {
+        // set new current time
+        const onLeaveData = {
+            currentTime: video.currentTime(),
+            id: id
+        }
+
+        const JSONData = JSON.stringify(onLeaveData);
+        request.open("post", '/Code1/functions/setCurrentTime.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(JSONData);
+        
+    })
+    
+    const request = new XMLHttpRequest()
+    request.onload = () => {
+        let responseObject = null;
+        try {
+            responseObject = JSON.stringify(request.responseText);
+        } catch (e) {
+            console.error('Could not parse JSON');
+        }
+
+        if(responseObject){
+            const pasrseResponseObject = JSON.parse(JSON.parse(responseObject));
+            video.currentTime(pasrseResponseObject.currentTime);
+        }
+    }
+
+    request.open("post", '/Code1/functions/getCurrentTime.php');
+    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    request.send(id);
+}
+
 const loginPopup = document.querySelector(".login-popup");
 
 const loginBtn = document.querySelector('.log-in');
@@ -383,5 +424,25 @@ if(createCourseForm.submit != undefined){
         request.open('post', '/Code1/functions/createCourse.php');
         
         request.send(requestData);  
+    })
+}
+
+// switiching display on opinions and description
+const description = document.getElementById("course-decription-btn");
+const opinions = document.getElementById("course-opinions-btn");
+if(description != undefined && opinions != undefined){
+    const descriptionContent = document.querySelector(".course-description");
+    const opinionsContent = document.querySelector(".course-opinions");
+    description.addEventListener('click', () => {
+        opinionsContent.style.display = "none";
+        descriptionContent.style.display = "block";
+        description.classList.add("active");
+        opinions.classList.remove("active");
+    })
+    opinions.addEventListener('click', ()=> {
+        opinionsContent.style.display = "block";
+        descriptionContent.style.display = "none";
+        description.classList.remove("active");
+        opinions.classList.add("active");
     })
 }

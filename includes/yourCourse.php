@@ -22,7 +22,9 @@
         controls
         preload="auto"
         poster="/Code1/miniatures/<?=$row['photoSource']?>"
-        data-setup="{}"
+        data-setup='{
+            "playbackRates": [0.5, 1, 1.5, 2]
+        }'
         >
             <source src="/Code1/videos/<?=$row['videoSource']?>" type="video/mp4" />
             <source src="MY_VIDEO.webm" type="video/webm" />
@@ -30,55 +32,52 @@
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
             <a href="https://videojs.com/html5-video-support/" target="_blank"
-                >supports HTML5 video</a
-            >
+                >supports HTML5 video</a>
             </p>
         </video>
     </div>
     <div class="your-course-section">
         <div class="section-nav">
             <ul>
-            <?php
-                if(isset($_GET['id'])){
-                    $id = $_GET['id'];
-                } else {
-                    $id = "";
-                }
-                echo "<a href='/Code1/yourCourse/$id/courseDescription'><li><div class='nav-option active'>Opis kursu</div></li></a>
-                <a href='/Code1/yourCourse/$id/courseOpinions'><li><div class='nav-option'>Opinie</div></li></a>";
-                
-            ?>
+                <li><div class='nav-option active' id="course-decription-btn">Opis kursu</div></li>
+                <li><div class='nav-option' id="course-opinions-btn">Opinie</div></li>
             </ul>
         </div>
         <div class="section-content">
-        <?php
-            if(isset($_GET['subPage'])){
-                $subPage = $_GET['subPage'];
-            } else {
-                $subPage = "";
-            }
-
-            
-
-            if($subPage == ""){
-                echo "<div class='course-description'>
-                    <h1>O kursie nr ".$row['name']."</h1>
-                    <p>".$row['description']."</p>
-                </div>";
-            } else if ($subPage == "courseDescription"){
-                echo "<div class='course-description'>
-                    <h1>O kursie nr ".$row['name']."</h1>
-                    <p>".$row['description']."</p>
-                </div>";
-            } else if ($subPage == "courseOpinions"){
-                echo "<div class='course-opinions'>
-                        opinions
-                    </div>";
-            }
-        }
-        ?>
-            
-            
+            <div class='course-description'>
+                <h1><?=$row['name']?></h1>
+                <p><?=$row['description']?></p>
+            </div>
+            <div class='course-opinions'>
+                <h1>Opinie</h1>
+                <form>
+                    <label for="opinion">Zostaw opinię</label>
+                    <textarea id="opinion" cols="20" rows="10"></textarea>
+                </form>
+                <?php
+                    $opinions = $data->con->prepare("SELECT user.username, opinion.rating, opinion.opinionContent, opinion.opinionDateTime FROM opinion JOIN user ON user.userID = opinion.userID JOIN course ON course.courseID = opinion.courseID WHERE course.courseID = :courseID");
+                    $opinions->bindParam(":courseID", $_GET['id']);
+                    $opinions->execute();
+                    while($opinionRow = $opinions->fetch(PDO::FETCH_ASSOC)){
+                ?>
+                
+                    <div class="opinion-card">
+                        <div class="opinion-card-header">
+                            <h3><?=$opinionRow['username']?></h3>
+                            <p><?= $opinionRow['opinionDateTime']?></p>
+                        </div>
+                        <div class="opinion-card-content">
+                            <p><?= $opinionRow['opinionContent']?></p>
+                        </div>
+                        <div class="opinion-card-rating">
+                            <p>Ocena: <?= $opinionRow['rating']?>/5</p>
+                        </div>
+                    </div>
+                <?php 
+                            }
+                    }
+                ?>
+            </div>
         </div>
     </div>
 </div>

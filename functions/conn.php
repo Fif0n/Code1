@@ -365,4 +365,23 @@ class Database {
             )
         );
     }
+    public function getCurrentTime($userId, $courseId){
+        $stmt = $this->con->prepare("SELECT currentTime FROM relation WHERE courseID = :courseID AND userID = :userID");
+        $stmt->bindParam(":courseID", $courseId, PDO::PARAM_STR);
+        $stmt->bindParam(":userID", $userId, PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo json_encode(
+            array(
+                'currentTime' => $row['currentTime']
+            )
+        );
+    }
+    public function setCurrentTime($currentTime, $courseId, $userId){
+        $stmt = $this->con->prepare("UPDATE relation SET currentTime = :currentTime WHERE userID = :userID AND courseID = :courseID");
+        $stmt->bindParam(":currentTime", $currentTime, PDO::PARAM_STR);
+        $stmt->bindParam(":userID", $userId, PDO::PARAM_STR);
+        $stmt->bindParam(":courseID", $courseId, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 }
