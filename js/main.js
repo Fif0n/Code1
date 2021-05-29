@@ -4,7 +4,7 @@ if(document.querySelector("#my-video") != undefined){
     var video = videojs('my-video');
     
     const url = window.location.href;
-    const id = url.slice(34, 35);
+    const id = url.slice(34, url.length);
     window.addEventListener("beforeunload", () => {
         // set new current time
         const onLeaveData = {
@@ -37,6 +37,8 @@ if(document.querySelector("#my-video") != undefined){
     request.open("post", '/Code1/functions/getCurrentTime.php');
     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     request.send(id);
+
+    
 }
 
 const loginPopup = document.querySelector(".login-popup");
@@ -430,19 +432,181 @@ if(createCourseForm.submit != undefined){
 // switiching display on opinions and description
 const description = document.getElementById("course-decription-btn");
 const opinions = document.getElementById("course-opinions-btn");
+
+
 if(description != undefined && opinions != undefined){
+
     const descriptionContent = document.querySelector(".course-description");
-    const opinionsContent = document.querySelector(".course-opinions");
+    const opinionsContent = document.createElement("div");
+    opinionsContent.className = "course-opinions";
+    const section = document.querySelector(".section-content");
+
+    function showComments(){
+        const request = new XMLHttpRequest();
+        opinionsContent.innerHTML = '';
+        descriptionContent.style.display = "none";
+        section.appendChild(opinionsContent);
+        description.classList.remove("active");
+        opinions.classList.add("active");
+       
+            
+            const url = window.location.href;
+            const id = url.slice(34, url.length);
+    
+            request.onload = () => {
+                let responseObject = null;
+                try{
+                    responseObject = request.responseText;
+                } catch(e) {
+                    console.error('Could not parse JSON');
+                }
+                if(responseObject){
+                    const requestData = JSON.parse(responseObject);
+                    if(!requestData[requestData.length-1].owner == true){
+                        opinionsContent.innerHTML += `
+                        <h1>Opinie</h1>
+                        <form>
+                            <label for="opinion_content">Podziel się opinią</label>
+                            <textarea id="opinion_content" cols="20" rows="10"></textarea>
+                            <label for="opinion_rating">Oceń w skali od 1 do 5</label>
+                            <input type="number" min="1" max="5" id="opinion_rating">
+                            <button id="opinion_submit" required>Opublikuj</button>
+                        </form>`;
+                    }
+                    
+                    if(requestData[0].username == undefined){
+                        opinionsContent.innerHTML += `
+                            <h2>Brak opini</h2>
+                        `
+                    } else {
+                        for(let i = 0; i<=requestData.length-2; i++){
+                            opinionsContent.innerHTML += `
+                            <div class="opinion-card">
+                                <div class="opinion-card-header">
+                                    <h3>${requestData[i]['username']}</h3>
+                                    <p>${requestData[i]['opinionDateTime']}</p>
+                                </div>
+                                <div class="opinion-card-content">
+                                    <p>${requestData[i]['opinionContent']}</p>
+                                </div>
+                                <div class="opinion-card-rating">
+                                    <p>Ocena: ${requestData[i]['rating']}/5</p>
+                                </div>
+                            </div>`;
+                        }
+                    }
+                    
+                    if(!requestData[requestData.length-1].owner == true){
+                        document.querySelector("#opinion_submit").addEventListener("click", e => {
+                            const addOpinionForm = {
+                                opinionContent: document.getElementById("opinion_content"),
+                                opinionRating: document.getElementById("opinion_rating"),
+                                submit: document.getElementById("opinion_submit")
+                            }
+                                e.preventDefault();
+                                const opinionRequest = new XMLHttpRequest();
+                        
+                                const url = window.location.href;
+                                const id = url.slice(34, url.length);
+                        
+                                const requestData = {
+                                    opinionContent: addOpinionForm.opinionContent.value,
+                                    opinionRating: addOpinionForm.opinionRating.value,
+                                    courseId: id
+                                };
+                        
+                                opinionRequest.onload = () => {
+                                    let responseObject = null;
+                                    try{
+                                        responseObject = JSON.stringify(request.responseText);
+                                    } catch(e) {
+                                        console.error('Could not parse JSON');
+                                    }
+                                    if(responseObject){
+                                        showComments()
+                                    }
+                                }
+                                const fields = JSON.stringify(requestData);
+                                opinionRequest.open('post', '/Code1/functions/addOpinion.php');
+                                opinionRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                                opinionRequest.send(fields);       
+                        })
+                    }
+                }
+                
+                    }
+                    request.open('post', '/Code1/functions/getOpinions.php');
+                request.send(id);
+                    
+    }
+
+    // show course description
+    
     description.addEventListener('click', () => {
-        opinionsContent.style.display = "none";
+        opinionsContent.remove();
         descriptionContent.style.display = "block";
         description.classList.add("active");
         opinions.classList.remove("active");
     })
-    opinions.addEventListener('click', ()=> {
-        opinionsContent.style.display = "block";
-        descriptionContent.style.display = "none";
-        description.classList.remove("active");
-        opinions.classList.add("active");
+    // show opinions
+    opinions.addEventListener('click', () => {    
+        showComments();
+    });
+
+}
+// edit course
+const editCourseBtn = document.getElementById("course-edit-btn");
+if(editCourseBtn != undefined){
+    const editPopup = document.querySelector(".edit-popup");
+    editCourseBtn.addEventListener("click", () => {
+        
+        editPopup.style.display = "flex"
+    })
+    const closeEditBtn = document.querySelector('.close-edit')
+    closeEditBtn.addEventListener('click', () => {
+        editPopup.style.display = "none";
+    })
+    
+    editPopup.addEventListener('click', e => {
+        if(e.target == editPopup){
+            editPopup.style.display = "none";
+        }
+    })
+
+    const editCourseForm = {
+        name: document.getElementById("edit-course-name"),
+        description: document.getElementById("edit-course-description"),
+        prize: document.getElementById("edit-course-prize"),
+        submit: document.getElementById("edit-course-submit"),
+        error: document.getElementById("edit-course-error-message")
+    }
+    editCourseForm.submit.addEventListener("click", e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+        const url = window.location.href;
+        const id = url.slice(34, url.length);
+        const requestData = {
+            name: editCourseForm.name.value,
+            description : editCourseForm.description.value,
+            prize: parseFloat(editCourseForm.prize.value),
+            id: id
+        };
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = JSON.stringify(request.responseText);
+            } catch(e) {
+                console.error('Could not parse JSON');
+            }
+            if(responseObject){
+                singleResponse(responseObject, editCourseForm);
+            }
+        }
+        const fields = JSON.stringify(requestData);
+
+        request.open('post', '/Code1/functions/editCourse.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(fields);     
     })
 }

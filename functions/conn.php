@@ -384,4 +384,95 @@ class Database {
         $stmt->bindParam(":courseID", $courseId, PDO::PARAM_STR);
         $stmt->execute();
     }
+    public function getOpinions($id){
+        $stmt = $this->con->prepare("SELECT user.username, opinion.rating, opinion.opinionContent, opinion.opinionDateTime FROM opinion JOIN relation ON relation.relationID = opinion.relationID JOIN user ON relation.userID = user.userID WHERE relation.courseID = :courseID GROUP BY opinion.opinionDateTime DESC");
+        $stmt->bindParam(":courseID", $id, PDO::PARAM_STR);
+        $stmt->execute();
+        $owner = $this->con->prepare("SELECT published FROM relation WHERE userID = :userID AND courseID = :courseID");
+        $owner->bindParam(":userID", $_SESSION['userID'], PDO::PARAM_STR);
+        $owner->bindParam(":courseID", $id, PDO::PARAM_STR);
+        $owner->execute();
+        if($stmt->rowCount() <= 0){
+            $opinionsJSON[] = array();
+            while ($row = $owner->fetch(PDO::FETCH_ASSOC)) {
+                if($row['published'] == 1){
+                    $opinionsJSON[] = ["owner" => true];
+                } else {
+                    $opinionsJSON[] = ["owner" => false];
+                }
+            }
+            echo json_encode($opinionsJSON);
+        } else {
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                $opinionsJSON[] = array(
+                    "username" => $row['username'],
+                    "opinionDateTime" => $row['opinionDateTime'],
+                    "opinionContent" => $row['opinionContent'],
+                    "rating" => $row['rating']
+                );
+            }
+            
+            while ($row = $owner->fetch(PDO::FETCH_ASSOC)) {
+                if($row['published'] == 1){
+                    $opinionsJSON[] = ["owner" => true];
+                } else {
+                    $opinionsJSON[] = ["owner" => false];
+                }
+            }
+            echo json_encode($opinionsJSON);
+            
+        }
+        
+    }
+
+    public function addOpinion($fields){
+        $opinionContent = $fields['opinionContent'];
+        $opinionRating = $fields['opinionRating'];
+        $courseId = $fields['courseId'];
+        $dateTime = date('Y-m-d H:i:s');
+        $userID = $_SESSION['userID'];
+        $relationID = $this->con->prepare("SELECT relationID FROM relation WHERE userID = :userID AND courseID = :courseID");
+        $relationID->bindParam(":courseID",$courseId);
+        $relationID->bindParam(":userID",$userID);
+        $relationID->execute();
+        while($id = $relationID->fetch(PDO::FETCH_ASSOC)){
+            $stmt = $this->con->prepare("INSERT INTO opinion (rating, opinionContent, opinionDateTime, relationID) VALUES (:rating, :opinionContent, :opinionDateTime, :relationID)");
+            $stmt->execute(
+                array(
+                    ":rating" => $opinionRating,
+                    ":opinionContent" => $opinionContent,
+                    ":opinionDateTime" => $dateTime,
+                    ":relationID" => $id['relationID']
+                )
+            );
+        }
+    }
+
+    public function editCourse($fields){
+        $name = $fields['name'];
+        $description = $fields['description'];
+        $prize = $fields['prize'];
+        $courseId = $fields['id'];
+        $isName = $this->con->prepare("SELECT name FROM course WHERE name = :name AND NOT courseID = :courseID");
+        $isName->bindParam(":name", $name);
+        $isName->bindParam(":courseID", $courseId);
+        $isName->execute();
+        if($isName->rowCount() <= 0){
+            $updateCourse = $this->con->prepare("UPDATE course SET name = :name, description = :description, prize = :prize WHERE courseID = :courseID");
+            $updateCourse->bindParam(":name", $name);
+            $updateCourse->bindParam(":description", $description);
+            $updateCourse->bindParam(":prize", $prize);
+            $updateCourse->bindParam(":courseID", $courseId);
+            $updateCourse->execute();
+        } else {
+            $this->ok = false;
+            $this->error[] = "Istnieje już taka nazwa kursu";
+        }
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+    }
 }

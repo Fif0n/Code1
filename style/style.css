@@ -753,12 +753,9 @@ section h1 {
 .section-nav .active {
     background-color: var(--light-button);
 }
-.course-opinions {
-    display: none;
-}
 .course-opinions label {
     font-size: 22px;
-    margin: 5px 0   ;
+    margin: 5px 0;
 }
 .course-opinions h1 {
     text-align: center;
@@ -766,12 +763,41 @@ section h1 {
 .course-opinions form {
     width: 70%;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 .course-opinions form textarea{
     width: 100%;
     height: 100px;
     font-size: 22px;
     resize: none;
+}
+.course-opinions form label:last-child {
+    font-size: 18px;
+    margin: auto;
+}
+.course-opinions form input {
+    height: 30px;
+    width: 20%;
+}
+.course-opinions form button {
+    width: 30%;
+    margin: 10px auto;
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    border: 1px solid black;
+    background-color: #5bc0de;
+    cursor: pointer;
+    transition: background-color .1s;
+}
+.course-opinions form button:hover {
+    background-color: #2193f7;
+}
+.course-opinions h2 {
+    text-align: center;
+    font-size: 30px;
 }
 .opinion-card {
     margin: 10px auto;
@@ -793,7 +819,81 @@ section h1 {
     text-align: center;
     color: var(--dark-button);
 }
-
+.edit-popup {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 150px;
+}
+.edit-content {
+    background-color: var(--background);
+    margin: auto;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 40px;
+    width: 500px;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.edit-content form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+}
+.edit-content form input {
+    margin: 10px 0 ;
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+}
+.edit-content form button {
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+    margin: 10px 0;
+    background-color: #5bc0de;
+    transition: bacgorund-color .2s;
+}
+.edit-content form button:hover {
+    background-color: #0275d8;
+}
+.edit-content form textarea {
+    resize: none;
+    height: 90px;
+    padding: 0;
+    margin: 10px 0;
+    font-size: 18px;
+}
+#edit-course-error-message {
+    background-color: rgb(255, 232, 232);
+    border: 1px solid red;
+    color: red;
+    width: 60%;  
+}
+.edit-content .close-edit {
+    color: #e40000;
+    position: relative;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 38px;
+    font-weight: bold;
+    cursor: pointer;
+}
 /* create course */
 .create-course-container {
     display: flex;
