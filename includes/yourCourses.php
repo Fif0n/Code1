@@ -128,17 +128,17 @@
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                     $tags = json_decode($row['tags']);
                     echo "
-                        <a href='/Code1/yourCourse/".$row['courseID']."/'>
+                        <a href='/Code1/yourCourse/".$row['courseID']."'>
                             <div class='course-card'>
                                 <img src='/Code1/miniatures/".$row['photoSource']."' alt=''>
                                 <div class='course-info'>
                                     <h3>".$row['name']."</h3>
                                     <p>średnia ocena:";
-                                    $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.courseID = opinion.courseID WHERE opinion.courseID = :courseID");
+                                    $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.relationID = opinion.relationID WHERE relation.courseID = :courseID");
                                     $ratings->bindParam(":courseID", $row['courseID'], PDO::PARAM_STR);
                                     $ratings->execute();
                                     while($rate = $ratings->fetch(PDO::FETCH_ASSOC)){
-                                        echo " ". $rate['ratingAVG']. " (".$rate['ratingCOUNT'] . ")";
+                                        echo " ". round($rate['ratingAVG'], 2). " (".$rate['ratingCOUNT'] . ")";
                                     }
                                     echo "</p>
                                     <p>liczba zakupień: ";
