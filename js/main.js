@@ -664,5 +664,18 @@ if(deleteCourseBtn != undefined){
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(fields);     
     })
-
+}
+// changing nav color in your courses
+const boughtCoursesNav = document.querySelector("#bought-courses");
+const publishedCoursesNav = document.querySelector("#published-courses");
+if(boughtCoursesNav != undefined && publishedCoursesNav != undefined){
+    const url = window.location.href;
+    console.log(url)
+    if(url == 'http://localhost/Code1/yourCourses/boughtCourses' || url == 'http://localhost/Code1/yourCourses'){
+        boughtCoursesNav.classList.add("active");
+        publishedCoursesNav.classList.remove("active");
+    } else if (url == 'http://localhost/Code1/yourCourses/publishedCourses'){
+        boughtCoursesNav.classList.remove("active");
+        publishedCoursesNav.classList.add("active");
+    }
 }
