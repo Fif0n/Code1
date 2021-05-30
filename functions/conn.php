@@ -475,4 +475,45 @@ class Database {
             )
         );
     }
+
+    public function deleteCourse($fields){
+        $password = $fields['password'];
+        $courseId = $fields['id'];
+        $hashedPassword = $this->con->prepare("SELECT password FROM user WHERE userID = :userID");
+        $hashedPassword->bindParam(":userID", $_SESSION['userID']);
+        $hashedPassword->execute();
+        $correctPassword = $hashedPassword->fetch(PDO::FETCH_ASSOC);
+        // echo $correctPassword['password'];
+        if(password_verify($password, $correctPassword['password'])){
+            $relationID = $this->con->prepare("SELECT relationID FROM relation WHERE courseID = :courseID");
+            $relationID->bindParam(":courseID", $courseId);
+            $relationID->execute();
+            while($relationIDRow = $relationID->fetch(PDO::FETCH_ASSOC)){
+                $deleteOpinions = $this->con->prepare("DELETE FROM opinion WHERE relationID = :relationID");
+                $deleteOpinions->bindParam(":relationID", $relationIDRow['relationID']);
+                $deleteOpinions->execute();
+            }
+            
+            $deleteRelation = $this->con->prepare("DELETE FROM relation WHERE courseID = :courseID");
+            $deleteRelation->bindParam(":courseID", $courseId);
+            $deleteRelation->execute();
+
+            $deleteCourse = $this->con->prepare("DELETE FROM course WHERE courseID = :courseID");
+            $deleteCourse->bindParam(":courseID", $courseId);
+            $deleteCourse->execute();
+
+            
+        } else {
+            $this->ok = false;
+            $this->error[] = "Nieprawidłowe hasło";
+        }
+
+        echo json_encode(
+            array(
+                'ok' => $this->ok,
+                'error' => $this->error
+            )
+        );
+
+    }
 }

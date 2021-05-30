@@ -652,7 +652,9 @@ section h1 {
     margin: 50px 0;
     flex-wrap: wrap;
 }
-
+.course-info {
+    transition: color .2s;
+}
 .your-courses-list .course-card {
     width: 300px;
     border: 1px solid grey;
@@ -669,7 +671,7 @@ section h1 {
     width: 100%;
     height: 250px;
 }
-.your-courses-list .course-card:hover {
+.course-card:hover .course-info{
     color: var(--user-circle);
 }
 .your-courses-list .course-card img:hover {
@@ -704,6 +706,7 @@ section h1 {
 .your-courses-list .add-course button:hover {
     background-color: #0275d8;
 }
+
 
 /* your course */
 .your-course-container {
@@ -850,7 +853,7 @@ section h1 {
     margin: 0 auto;
 }
 .edit-content form input {
-    margin: 10px 0 ;
+    margin: 10px 0;
     border-radius: 20px;
     font-size: 20px;
     height: 50px;
@@ -886,6 +889,68 @@ section h1 {
     width: 60%;  
 }
 .edit-content .close-edit {
+    color: #e40000;
+    position: relative;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 38px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.delete-course-popup {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 150px;
+}
+.delete-course-content {
+    background-color: var(--background);
+    margin: auto;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 40px;
+    width: 500px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.delete-course-content p {
+    font-size: 18px;
+}
+.delete-course-content em {
+    color: #cc2337;
+}
+.delete-course-content form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+.delete-course-content form button {
+    margin: 10px 0;
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    border: 1px solid black;
+    background-color: #EC5252;
+}
+.delete-course-content form input {
+    margin: 10px 0;
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+}
+.close-delete {
     color: #e40000;
     position: relative;
     text-align: right;
