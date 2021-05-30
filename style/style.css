@@ -349,8 +349,6 @@ section h1 {
 }
 .home-courses-grid .course-card {
     text-align: left;
-    /* width: 20%; */
-    /* justify-content: space-between; */
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -361,7 +359,7 @@ section h1 {
 .home-courses-grid .course-card h3 {
     margin: 2px;
 }
-.home-courses-grid .course-card h5 {
+.home-courses-grid .course-card h4 {
     margin: 2px;
     color: grey;
 }
@@ -638,7 +636,8 @@ section h1 {
     background-color: var(--light-button);
 }
 .course-info h3 {
-    height: 40px;
+    padding: 0;
+    margin: 0;
 }
 .bought-courses {
     display: flex;
