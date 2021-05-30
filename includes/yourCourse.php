@@ -8,7 +8,7 @@
         $isThereRelation->bindParam(":courseID", $_GET['id']);
         $isThereRelation->execute();
         if($isThereRelation->rowCount() <= 0){
-            header("Location: /Code1/");
+            header("Location: /Code1/yourCourses");
         }
 ?>
 <div class="your-course-container">
@@ -51,7 +51,9 @@
                 $owner = false;
                 while($relationRow = $isThereRelation->fetch(PDO::FETCH_ASSOC)){
                     if($relationRow['published'] == 1){
-                        echo "<li><div class='nav-option' id='course-edit-btn'>Edytuj Dane</div></li>";
+                        echo "<li><div class='nav-option' id='course-edit-btn'>Edytuj Dane</div></li>
+                        <li><div class='nav-option' id='course-delete-btn'>Usuń kurs</div></li>
+                        ";
                         $owner = true;
                     }
                 }
@@ -84,6 +86,21 @@
                     </ul>
                 </form>
                 
+            </div>
+        </div>
+        <div class='delete-course-popup'>
+            <div class='delete-course-content'>
+                <span class='close-delete'>&times;</span>
+                <h1>Usuń kurs</h1>
+                <form>
+                <h2>Podaj hasło aby usunąć kurs</h2>
+                    <input type='password' id='delete-course-password' placeholder='Hasło'> 
+                    <button id='delete-course-submit'>Usuń</button>
+                    <ul id='delete-course-error-message'>
+
+                    </ul>
+                </form>
+                <p><em>Uwaga: </em>usunięcie jest nieodwracalne</p>
             </div>
         </div>";
     }

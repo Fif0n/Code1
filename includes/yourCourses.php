@@ -128,8 +128,8 @@
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                     $tags = json_decode($row['tags']);
                     echo "
-                        <a href='/Code1/yourCourse/".$row['courseID']."'>
                             <div class='course-card'>
+                                <a href='/Code1/yourCourse/".$row['courseID']."'>
                                 <img src='/Code1/miniatures/".$row['photoSource']."' alt=''>
                                 <div class='course-info'>
                                     <h3>".$row['name']."</h3>
@@ -155,8 +155,8 @@
                                     }
                                     echo "</p>
                                 </div>
+                                </a>
                             </div>
-                        </a>
                      ";
                 }
                 echo "</div>

@@ -610,3 +610,59 @@ if(editCourseBtn != undefined){
         request.send(fields);     
     })
 }
+
+// delete course
+const deleteCourseBtn = document.getElementById("course-delete-btn")
+
+if(deleteCourseBtn != undefined){
+    const deletePopup = document.querySelector(".delete-course-popup");
+    deleteCourseBtn.addEventListener("click", () => {
+        
+        deletePopup.style.display = "flex"
+    })
+    const closeEditBtn = document.querySelector('.close-delete')
+    closeEditBtn.addEventListener('click', () => {
+        deletePopup.style.display = "none";
+    })
+    
+    deletePopup.addEventListener('click', e => {
+        if(e.target == deletePopup){
+            deletePopup.style.display = "none";
+        }
+    })
+
+    const deleteCourseForm = {
+        password: document.getElementById("delete-course-password"),
+        submit: document.getElementById("delete-course-submit"),
+        error: document.getElementById("delete-course-error-message")
+    }
+
+    deleteCourseForm.submit.addEventListener("click", e => {
+        e.preventDefault();
+        const request = new XMLHttpRequest();
+        const url = window.location.href;
+        const id = url.slice(34, url.length);
+        const requestData = {
+            password: deleteCourseForm.password.value,
+            id: id
+        };
+
+        request.onload = () => {
+            let responseObject = null;
+            try{
+                responseObject = JSON.stringify(request.responseText);
+            } catch(e) {
+                console.error('Could not parse JSON');
+            }
+            if(responseObject){
+                singleResponse(responseObject, deleteCourseForm);
+            }
+        }
+        const fields = JSON.stringify(requestData);
+
+        request.open('post', '/Code1/functions/deleteCourse.php');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(fields);     
+    })
+
+}
