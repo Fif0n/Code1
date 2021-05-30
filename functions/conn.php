@@ -498,11 +498,19 @@ class Database {
             $deleteRelation->bindParam(":courseID", $courseId);
             $deleteRelation->execute();
 
+            $fileNames = $this->con->prepare("SELECT photoSource, videoSource FROM course WHERE courseID = :courseID");
+            $fileNames->bindParam(":courseID", $courseId);
+            $fileNames->execute();
+
+            while($row = $fileNames->fetch(PDO::FETCH_ASSOC)){
+                unlink("../miniatures/".$row['photoSource']."");
+                unlink("../videos/".$row['videoSource']."");
+            }
+
             $deleteCourse = $this->con->prepare("DELETE FROM course WHERE courseID = :courseID");
             $deleteCourse->bindParam(":courseID", $courseId);
             $deleteCourse->execute();
 
-            
         } else {
             $this->ok = false;
             $this->error[] = "Nieprawidłowe hasło";
