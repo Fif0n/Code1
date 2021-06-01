@@ -166,9 +166,10 @@ nav {
 }
 .user-icon {
     background-color: var(--user-circle);
-    border-radius: 50%;
+    
     height: 50px;
     width: 50px;
+    border-radius: 50%;
     border: 1px solid black;
     margin: auto 30px;   
     cursor: pointer;
@@ -338,37 +339,45 @@ section h1 {
 }
 .home-courses-grid {
     display: flex;
-    flex-wrap:wrap;
-    
+    flex-direction: row;
 }
 .home-courses-grid a{
-    flex: 1;
+    margin: 0 auto;
 }
 .home-courses-grid img {
+    height: 250px;
     transition: 0.2s filter;
 }
 .home-courses-grid .course-card {
-    text-align: left;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    padding: 0;
+    margin: 0;
+    margin: 0 auto;
 }
 .home-courses-grid .course-card img:hover {
     filter: brightness(80%);
-  }
+}
 .home-courses-grid .course-card h3 {
-    margin: 2px;
+    margin: 2px 0;
 }
 .home-courses-grid .course-card h4 {
-    margin: 2px;
+    margin: 2px 0;
     color: grey;
 }
 .home-courses-grid .course-card p {
-    margin: 2px;
+    margin: 5px 0;
+}
+.home-courses-grid .course-card em {
+    margin: 0 5px 0 0;
 }
 .home-courses-grid .course-card img {
     width: 300px;
+    margin: 0;
     border: 1px solid black;
+}
+.course-card .course-info {
+    text-align: left;
 }
 /* Register form */
 

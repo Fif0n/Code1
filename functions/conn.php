@@ -483,7 +483,6 @@ class Database {
         $hashedPassword->bindParam(":userID", $_SESSION['userID']);
         $hashedPassword->execute();
         $correctPassword = $hashedPassword->fetch(PDO::FETCH_ASSOC);
-        // echo $correctPassword['password'];
         if(password_verify($password, $correctPassword['password'])){
             $relationID = $this->con->prepare("SELECT relationID FROM relation WHERE courseID = :courseID");
             $relationID->bindParam(":courseID", $courseId);

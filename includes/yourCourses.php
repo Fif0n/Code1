@@ -30,71 +30,40 @@
             $bought->execute();
 
            
-            if($subPage == ""){
+            if($subPage == "" || $subPage == "boughtCourses"){
+                echo "<div class='bought-courses'>";
                 while($row = $bought->fetch(PDO::FETCH_ASSOC)){
                     $tags = json_decode($row['tags']);
-                    echo "<div class='bought-courses'>
-                    <a href='/Code1/yourCourse/".$row['courseID']."'>
-                        <div class='course-card'>
-                            <img src='/Code1/miniatures/".$row['photoSource']."'>
-                            <div class='course-info'>
-                                <h3>".$row['name']."</h3>
-                                <h5>";
-                                $author = $data->con->prepare("SELECT user.username FROM user JOIN relation ON user.userID = relation.userID JOIN course ON relation.courseID = course.courseID WHERE relation.courseID = :courseID AND relation.published = 1");
-                                $author->bindParam(":courseID", $row['courseID']);
-                                $author->execute();
-                                $authorRow = $author->fetch(PDO::FETCH_ASSOC);
-                                echo $authorRow['username'];
-                                echo "</h5>
-                                <p>Średnia ocen: ";
-                                $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.relationID = opinion.relationID WHERE relation.courseID = :courseID");
+                    echo "
+                            <div class='course-card'>
+                                <a href='/Code1/yourCourse/".$row['courseID']."'>
+                                <img src='/Code1/miniatures/".$row['photoSource']."'>
+                                <div class='course-info'>
+                                    <h3>".$row['name']."</h3>
+                                    <h4>";
+                                    $author = $data->con->prepare("SELECT user.username FROM user JOIN relation ON user.userID = relation.userID JOIN course ON relation.courseID = course.courseID WHERE relation.courseID = :courseID AND relation.published = 1");
+                                    $author->bindParam(":courseID", $row['courseID']);
+                                    $author->execute();
+                                    $authorRow = $author->fetch(PDO::FETCH_ASSOC);
+                                    echo $authorRow['username'];
+                                    echo "</h4>
+                                    <p>średnia ocena:";
+                                    $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.relationID = opinion.relationID WHERE relation.courseID = :courseID");
                                     $ratings->bindParam(":courseID", $row['courseID'], PDO::PARAM_STR);
                                     $ratings->execute();
                                     while($rate = $ratings->fetch(PDO::FETCH_ASSOC)){
                                         echo " ". round($rate['ratingAVG'], 2). " (".$rate['ratingCOUNT'] . ")";
                                     }
-                                echo "</p>
-                                <p>";
-                                foreach($tags as $tag){
-                                    echo "<em>$tag</em>";
-                                }"</p>
-                            </div>
-                        </div>
-                    </a>";
-                }
-            }
-
-            else if ($subPage == "boughtCourses"){
-                while($row = $bought->fetch(PDO::FETCH_ASSOC)){
-                    $tags = json_decode($row['tags']);
-                    echo "<div class='bought-courses'>
-                    <a href='/Code1/yourCourse/".$row['courseID']."'>
-                        <div class='course-card'>
-                            <img src='/Code1/miniatures/".$row['photoSource']."'>
-                            <div class='course-info'>
-                                <h3>".$row['name']."</h3>
-                                <h4>";
-                                $author = $data->con->prepare("SELECT user.username FROM user JOIN relation ON user.userID = relation.userID JOIN course ON relation.courseID = course.courseID WHERE relation.courseID = :courseID AND relation.published = 1");
-                                $author->bindParam(":courseID", $row['courseID']);
-                                $author->execute();
-                                $authorRow = $author->fetch(PDO::FETCH_ASSOC);
-                                echo $authorRow['username'];
-                                echo "</h4>
-                                <p>Średnia ocen: ";
-                                $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.relationID = opinion.relationID WHERE relation.courseID = :courseID");
-                                    $ratings->bindParam(":courseID", $row['courseID'], PDO::PARAM_STR);
-                                    $ratings->execute();
-                                    while($rate = $ratings->fetch(PDO::FETCH_ASSOC)){
-                                        echo " ". round($rate['ratingAVG'], 2). " (".$rate['ratingCOUNT'] . ")";
+            
+                                    echo "<p>";
+                                    foreach($tags as $tag){
+                                        echo "<em>$tag</em>";
                                     }
-                                echo "</p>
-                                <p>";
-                                foreach($tags as $tag){
-                                    echo "<em>$tag</em>";
-                                }"</p>
+                                    echo "</p>
+                                </div>
+                                </a>
                             </div>
-                        </div>
-                    </a>";
+                     ";
                 }
             } else if($subPage == "publishedCourses"){
                 echo "<div class='published-courses'>";
@@ -140,7 +109,6 @@
                 ";
             }
         ?>
-            
             
     </div>   
 </section>

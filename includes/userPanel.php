@@ -12,8 +12,8 @@
             </div>
             <div class="user-panel-options">
                 <ul class="panel-options">
-                    <a href="/Code1/userPanel/editAccount"><li><div class="panel-option active"><p>Edytuj konto</p></div></li></a>
-                    <a href="/Code1/userPanel/delAccount"><li><div class="panel-option"><p>Usuń konto</p></div></li></a>
+                    <a href="/Code1/userPanel/editAccount"><li><div id="edit-account" class="panel-option"><p>Edytuj konto</p></div></li></a>
+                    <a href="/Code1/userPanel/delAccount"><li><div id="delete-account" class="panel-option"><p>Usuń konto</p></div></li></a>
                 </ul>
             </div>
         </div>
