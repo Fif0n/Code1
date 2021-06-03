@@ -20,7 +20,7 @@
             </tr>
             <?php
                 $data = new Database;
-                $purchasedCourses = $data->con->prepare("SELECT relation.relationDate, course.prize, course.name, course.courseID FROM relation JOIN course ON relation.courseID = course.courseID WHERE relation.userId = :userID AND relation.bought = 1");
+                $purchasedCourses = $data->con->prepare("SELECT relation.relationDate, course.prize, course.name, course.courseID FROM relation JOIN course ON relation.courseID = course.courseID WHERE relation.userId = 24 AND relation.bought = 1 order by relation.relationID DESC");
                 $purchasedCourses->bindParam(":userID", $_SESSION['userID']);
                 $purchasedCourses->execute();
                 while($row = $purchasedCourses->fetch(PDO::FETCH_ASSOC)){
