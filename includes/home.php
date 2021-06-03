@@ -22,8 +22,8 @@
                         <div class="course-info">
                             <h3><?= $popularRow['name']?></h3>
                             <h4><?= $popularRow['username']?></h4>
-                            <p><?= "ocena: ".round($row['rating_avg'], 2) . " (".$row['rating_count'].")"?></p>
-                            <p><?= $popularRow['prize']. " zł"?></p>
+                            <p><?= "Ocena: ".round($row['rating_avg'], 2) . " (".$row['rating_count'].")"?></p>
+                            <p>Cena: <?= $popularRow['prize']. " zł"?></p>
                             <p><?php
                              foreach($tags as $tag){
                                 echo "<em>$tag</em>";
@@ -56,9 +56,9 @@
                             <h3><?=$row['name']?></h3>
                             <h4><?=$row['username']?></h4>
                             <?php
-                                echo "ocena: ". round($ratingRow['ratingAVG'], 2). " (".$ratingRow['ratingCOUNT'] . ")<p>";
+                                echo "Ocena: ". round($ratingRow['ratingAVG'], 2). " (".$ratingRow['ratingCOUNT'] . ")<p>";
                             ?>
-                            <p><?=$row['prize']. " zł"?></p>
+                            <p>Cena: <?=$row['prize']. " zł"?></p>
                             <p><?php
                              foreach($tags as $tag){
                                 echo "<em>$tag</em>";

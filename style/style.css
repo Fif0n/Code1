@@ -1014,6 +1014,34 @@ section h1 {
     color: green;
     width: 50%;
 }
+/* purchase history */
+.purchased-history-container table {
+    text-align: left;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    font-size: 24px;
+    table-layout: fixed;
+}
+.purchased-history-container tr{
+    /* display: table-row; */
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    
+}
+.purchased-history-container tr:first-child,tr:last-child {
+    border: none;
+}
+.purchased-history-container td {
+    padding: 10px 0;
+    word-wrap:break-word
+}
+.purchased-history-container td a {
+    transition: 0.2s color;
+}
+.purchased-history-container td a:hover {
+    color: var(--user-circle);
+} 
 
 /* footer */
 
