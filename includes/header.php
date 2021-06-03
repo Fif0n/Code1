@@ -50,7 +50,7 @@
                                 </div>
                                 <li><a href='/Code1/userPanel'>Zarządzaj kontem</a></li>
                                 <li><a href='/Code1/yourCourses'>Twoje kursy</a></li>
-                                <li><a href=''>Historia zakupów</a></li>
+                                <li><a href='/Code1/purchaseHistory'>Historia zakupów</a></li>
                                 <li><form action='/Code1/functions/logout.php' method='POST'><button type='submit'>Wyloguj się</button></form></li>
                             </ul>
                         </div>
