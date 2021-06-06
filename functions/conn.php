@@ -44,8 +44,7 @@ class Database {
         $email = $fields['email'];
         $userName = $fields['username'];
         $password = $fields['password'];
-        $password_repeat = $fields['passwordRepeat']; 
-        // $user = 3;    
+        $password_repeat = $fields['passwordRepeat'];   
         $password_hashed = password_hash($password, PASSWORD_DEFAULT);
 
             $stmt = $this->con->prepare("INSERT INTO $tableName (username, email, password) VALUES (:username, :email, :password)");
@@ -53,7 +52,6 @@ class Database {
             $stmt->bindParam(':username', $userName, PDO::PARAM_STR);
             $stmt->bindParam(':password', $password_hashed, PDO::PARAM_STR);    
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            // $stmt->bindParam(':roleid', $user, PDO::PARAM_INT);
             if(strlen($userName) > 4){
                 if(strlen($password) > 4){
                     if($password === $password_repeat){

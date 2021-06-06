@@ -15,20 +15,33 @@
             <a href="/Code1/home">
                 <img src="/Code1/photos/logo.png">
             </a>
-            <input type="text" placeholder="Wyszukaj kurs">
+            <form action="/Code1/search" method="POST">
+                <input type="text" placeholder="Wyszukaj kurs" name="s">
+            </form>
             <nav>
-            
                 <ul class="nav-button">
                     <li class="button-text">
                         <span>Kategorie</span>
                         <div class="sub-menu">
                             <ul>
-                                <!-- tu będą na z bazy danych -->
-                                <li><a href="">Php</a></li>
-                                <li><a href="">Javasrcipt</a></li>
-                                <li><a href="">SQL</a></li>
-                                <li><a href="">Python</a></li>
-                                <li><a href="">Java</a></li>
+                                <?php
+                                include 'functions/conn.php';
+                                $conn = new Database;
+                                    $categories = $conn->con->prepare("SELECT tags FROM course");
+                                    $categories->execute();
+                                    $categoriesArr = array();
+                                    while($row = $categories->fetch(PDO::FETCH_ASSOC)){
+                                        $tags = json_decode($row['tags']);
+                                        foreach($tags as $tag){
+                                            if(!in_array($tag, $categoriesArr)){
+                                                $categoriesArr[] = $tag;
+                                            }
+                                        }
+                                    }
+                                    foreach($categoriesArr as $categorie){
+                                        echo "<li><a href='/Code1/search/$categorie/'>$categorie</a></li>";
+                                    }
+                                ?>
                             </ul>
                         </div>
                     </li>
