@@ -6,8 +6,8 @@
             <div class="home-courses-grid">
             <?php
                 $data = new Database;
-                $highestRate = $data->con->prepare("
-                SELECT AVG(rating) AS rating_avg, COUNT(opinionID) AS rating_count, relationID FROM opinion GROUP BY opinion.relationID having max(rating) AND COUNT(opinionID) > 1 ORDER BY avg(rating) DESC LIMIT 4");
+                $highestRate = $data->con->prepare("SELECT AVG(rating) AS rating_avg, COUNT(opinionID) AS rating_count, relation.relationID FROM opinion JOIN relation ON relation.relationID = opinion.relationID
+                GROUP BY relation.courseID having max(rating) AND COUNT(opinionID) > 1 ORDER BY avg(rating) DESC LIMIT 4");
                 $highestRate->execute();
                 while($row = $highestRate->fetch(PDO::FETCH_ASSOC)){
                     $popularCourses = $data->con->prepare("SELECT course.courseID, course.name, course.prize, course.photoSource, course.tags, user.username, relation.relationID FROM course JOIN relation ON course.courseID = relation.courseID JOIN user ON relation.userID = user.userID WHERE relation.relationID = :relationID");
@@ -16,12 +16,18 @@
                     while($popularRow = $popularCourses->fetch(PDO::FETCH_ASSOC)){
                         $tags = json_decode($popularRow['tags']);
             ?>
-                <a href="/Code1/includes/course/<?=$popularRow['courseID']?>">
+                <a href="/Code1/course/<?=$popularRow['courseID']?>">
                     <div class="course-card">
                         <img src="miniatures/<?= $popularRow['photoSource']?>">
                         <div class="course-info">
                             <h3><?= $popularRow['name']?></h3>
-                            <h4><?= $popularRow['username']?></h4>
+                            <?php
+                                $author = $data->con->prepare("SELECT user.username FROM user JOIN relation ON user.userID = relation.userID JOIN course ON relation.courseID = course.courseID WHERE relation.courseID = :courseID AND relation.published = 1");
+                                $author->bindParam(":courseID", $popularRow['courseID']);
+                                $author->execute();
+                                $authorRow = $author->fetch(PDO::FETCH_ASSOC);
+                            ?>
+                            <h4><?= $authorRow['username']?></h4>
                             <p><?= "Ocena: ".round($row['rating_avg'], 2) . " (".$row['rating_count'].")"?></p>
                             <p>Cena: <?= $popularRow['prize']. " zł"?></p>
                             <p><?php
@@ -40,7 +46,7 @@
             <h1>Najnowsze kursy</h1>
             <div class="home-courses-grid">
                 <?php
-                    $newCourses = $data->con->prepare("SELECT course.courseID, course.photoSource, course.name, course.tags, user.username, course.prize FROM relation JOIN course ON course.courseID = relation.courseID JOIN user ON user.userID = relation.userID WHERE relation.published = 1 ORDER by relation.relationDate DESC LIMIT 4");
+                    $newCourses = $data->con->prepare("SELECT course.courseID, course.photoSource, course.name, course.tags, user.username, course.prize FROM relation JOIN course ON course.courseID = relation.courseID JOIN user ON user.userID = relation.userID WHERE relation.published = 1 ORDER by relation.relationID DESC LIMIT 4");
                     $newCourses->execute();
                     while($row = $newCourses->fetch(PDO::FETCH_ASSOC)){
                         $ratings = $data->con->prepare("SELECT AVG(opinion.rating) AS ratingAVG, COUNT(opinion.rating) AS ratingCOUNT FROM opinion JOIN relation ON relation.relationID = opinion.relationID WHERE relation.courseID = :courseID");

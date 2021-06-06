@@ -1,8 +1,6 @@
 <?php
     session_start();
     include 'includes/header.php';
-    include 'functions/conn.php';
-    
     
     if(isset($_GET['view'])){
         $view = $_GET['view'];
@@ -26,10 +24,11 @@
         include 'includes/createCourseForm.php';
     } else if ($view == 'purchaseHistory') {
         include 'includes/purchaseHistory.php';
+    } else if ($view == 'search') {
+        include 'includes/search.php';
     } else {
         include 'includes/notFound.php';
     }
     
-
     include 'includes/footer.php';
 ?>
