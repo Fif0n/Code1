@@ -1,7 +1,7 @@
 <section>
     <div class="home-page">
         <img src="photos/home-photo.jpg">
-        <div class="recomended-courses">
+        <div class="recommended-courses">
             <h1>Najpopularniejsze kursy</h1>
             <div class="home-courses-grid">
             <?php
@@ -55,7 +55,7 @@
                         while($ratingRow = $ratings->fetch(PDO::FETCH_ASSOC)){
                             $tags = json_decode($row['tags']);      
                 ?>
-                <a href="/Code1/includes/course/<?=$row['courseID']?>">
+                <a href="/Code1/course/<?=$row['courseID']?>">
                     <div class="course-card">
                         <img src="miniatures/<?=$row['photoSource']?>">
                         <div class="course-info">

@@ -85,7 +85,6 @@
 
                     </ul>
                 </form>
-                
             </div>
         </div>
         <div class='delete-course-popup'>
