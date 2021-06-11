@@ -521,4 +521,12 @@ class Database {
         );
 
     }
+    public function buyCourse($courseId, $userId){
+        $date = date("Y-m-d");
+        $stmt = $this->con->prepare("INSERT INTO relation (bought, published, currentTime, relationDate, courseID, userID) VALUES (1, 0, 0, :date, :courseID, :userID)");
+        $stmt->bindParam(":date", $date);
+        $stmt->bindParam(":courseID", $courseId);
+        $stmt->bindParam(":userID", $userId);
+        $stmt->execute();
+    }
 }

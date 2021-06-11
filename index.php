@@ -26,6 +26,8 @@
         include 'includes/purchaseHistory.php';
     } else if ($view == 'search') {
         include 'includes/search.php';
+    } else if ($view == 'course'){
+        include 'includes/course.php';
     } else {
         include 'includes/notFound.php';
     }

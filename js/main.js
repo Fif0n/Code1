@@ -691,3 +691,22 @@ if(editAccountNav != undefined && deleteAccountNav != undefined){
         deleteAccountNav.classList.add("active");
     }
 }
+const buyBtn = document.querySelector("#buy-course-btn");
+if(buyBtn != undefined){
+    const buyPopup = document.querySelector(".buy-popup");
+    buyBtn.addEventListener("click", () => {
+        
+        buyPopup.style.display = "block"
+    })
+    const closeBuyBtn = document.querySelector('.close-buy')
+    closeBuyBtn.addEventListener('click', () => {
+        buyPopup.style.display = "none";
+    })
+    
+    buyPopup.addEventListener('click', e => {
+        if(e.target == buyPopup){
+            buyPopup.style.display = "none";
+        }
+    })
+}
+

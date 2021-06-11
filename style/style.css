@@ -331,7 +331,7 @@ section h1 {
     text-align: center;
     justify-content: center;
 }
-.recomended-courses {
+.recommended-courses {
     width: 100%;
     margin: 60px 0;
     justify-content: center;
@@ -427,6 +427,169 @@ section h4{
 
 .results-container .course-card .course-info {
     width: 100%;
+}
+/* course to buy */
+.course-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.course-container em {
+    background-color: rgb(115, 185, 212);
+    color: white;
+    border-radius: 15%;
+    padding: 5px;
+    font: 14px;
+    margin: 0 5px;
+    border: 1px solid rgb(80, 170, 206);
+}
+.course-header {
+    width: 100%;
+    height: 300px;
+    background-color: rgb(65, 65, 65);
+}
+.header-info {
+    margin: 50px 15%;
+    color: white;
+}
+.header-card {
+    height: 400px;
+    width: 350px;
+    background-color: white;
+    position: fixed;
+    right: 10%;
+    top: 10%;
+    border: 1px solid gray;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.header-card img {
+    width: 100%;
+    height: 200px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.header-card button {
+    width: 80%;
+    margin: 20px auto;
+    height: 50px;
+    font-size: 24px;
+    background-color: rgb(221, 64, 64);
+    border-radius: 10px;
+    color: white;
+    outline: none;
+}
+.header-card p {
+    font-size: 22px;
+}
+.course-container .course-info {
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    width: 1400px;
+}
+.course-info .course-info-nav {
+    width: 75%;
+}
+.course-info .course-info-nav ul {
+    display: flex;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+}
+.course-info .course-info-nav ul a li div {
+    font-size: 22px;
+    padding: 1px 2px;
+    margin: 5px;
+}
+.course-info-nav ul .active {
+    background-color: var(--light-button);
+}
+.course-info .course-info-nav ul li:hover {
+    background-color: var(--light-button);
+}
+.course-info .course-info-text {
+    width: 75%;
+    display: flex;
+}
+.course-info .course-info-text p{
+    text-align: left;
+    font-size: 20px;
+}
+.course-info-opinions {
+    width: 75%;
+    margin: 0;
+}
+.course-info-opinions {
+    width: 75%;
+    margin: left;
+}
+.course-info-opinions h3 {
+    text-align: center;
+    font-size: 20px;
+    margin: 10px 0;
+}
+.buy-popup {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 150px;
+}
+.buy-content {
+    background-color: var(--background);
+    margin: auto;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 40px;
+    width: 500px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.buy-content form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+}
+.buy-content input, .buy-content button {
+    border-radius: 20px;
+    font-size: 20px;
+    height: 50px;
+    outline: none;
+    padding-left: 30px;
+    border: 1px solid black;
+    margin: 10px 0;
+}
+.buy-content form button {
+    padding: 0;
+    background-color: rgb(221, 64, 64);
+    color: white;
+    cursor: pointer;
+    font-size: 24px;
+}
+.buy-content button:hover {
+    opacity: 0.7;
+}
+.buy-content .close-buy {
+    color: #e40000;
+    position: relative;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 38px;
+    font-weight: bold;
+    cursor: pointer;
 }
 /* Register form */
 
@@ -928,7 +1091,7 @@ section h4{
     border: 1px solid black;
     margin: 10px 0;
     background-color: #5bc0de;
-    transition: bacgorund-color .2s;
+    transition: background-color .2s;
 }
 .edit-content form button:hover {
     background-color: #0275d8;
